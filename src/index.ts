@@ -1,3 +1,3 @@
-import { Bookmark } from "./modules/Bookmarks";
+import { Bookmark, createBookmark } from "./modules/Bookmarks";
 
-export { Bookmark };
+export { Bookmark, createBookmark };
