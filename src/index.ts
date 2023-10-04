@@ -1,6 +1,3 @@
-const myCustomFunction = (name: string): string => `Hello ${name}`;
-function ciao(name: string): string {
-    return `Ciao ${name}`;
-}
+import { Bookmark } from "./modules/Bookmarks";
 
-export { myCustomFunction, ciao };
+export { Bookmark };
