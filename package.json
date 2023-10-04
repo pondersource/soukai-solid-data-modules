@@ -1,7 +1,7 @@
 {
-  "name": "@pondersource/soukai-solid-data-modules",
-  "version": "1.0.5",
-  "description": "Typescript NPM Package Starter",
+  "name": "soukai-solid-data-modules",
+  "version": "1.0.0",
+  "description": "Data Modules for Soukai Solid ODM",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -30,7 +30,7 @@
     "template",
     "ts"
   ],
-  "author": "Samuele C. De Tomasi",
+  "author": "Reza Soltani",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/pondersource/soukai-solid-data-modules/issues"
