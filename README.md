@@ -1,20 +1,4 @@
-# Typescript NPM Package Starter
-My template for creating npm packages using typescript.
-
-- TS to JS
-- Testing via Jest, includes coverage
-- ESLint
-- Ignore files to ensure minimal code is stored/shipped
-
-NPM link: [@el3um4s/typescript-npm-package-starter](https://www.npmjs.com/package/@el3um4s/typescript-npm-package-starter)
-
 ### Getting Started
-
-To create a new project based on this template using degit:
-
-```bash
-npx degit el3um4s/typescript-npm-package-starter
-```
 
 Then install the dependencies with
 
