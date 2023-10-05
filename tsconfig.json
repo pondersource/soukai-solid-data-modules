@@ -1,47 +1,12 @@
-// {
-//   "compilerOptions": {
-//     "target": "ES2020",
-// "outDir": "./lib",
-//     "useDefineForClassFields": true,
-//     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-//     "module": "ESNext",
-//     "skipLibCheck": true,
-
-//     /* Bundler mode */
-//     "moduleResolution": "node",
-//     // "allowImportingTsExtensions": true,
-//     "resolveJsonModule": true,
-//     "isolatedModules": true,
-//     "noEmit": true,
-//     // "jsx": "react-jsx",
-
-//     /* Linting */
-//     "strict": true,
-//     "noUnusedLocals": true,
-//     "noUnusedParameters": true,
-//     "noFallthroughCasesInSwitch": true,
-//     "composite": true,
-//     "allowSyntheticDefaultImports": true
-//   },
-//   "include": ["src"],
-//   "exclude": ["node_modules", "**/__tests__/*"]
-// }
-
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "baseUrl": "./src",
-    "outDir": "./lib",
-    "paths": {
-      "@/*": ["./*"]
-    }
+      "outDir": "./lib",
+      "module": "ESNext",
+      "target": "es6",
+      "declaration": true,
+      "strict": true
   },
-  "include": ["src/**/*.ts"],
+  "types": ["jest", "node"],
+  "include": ["src"],
   "exclude": ["node_modules", "**/__tests__/*"]
 }
