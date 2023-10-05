@@ -1,13 +1,11 @@
-# Included Modules:
+# Conventions implemented:
+Implemented conventions
 
 [Bookmark](https://pdsinterop.org/conventions/bookmark/)
 
 ## Usage
 
 ### Install and use the package
-
-To use the package in a project:
-
 ```bash
 npm i soukai-solid-data-modules
 ```

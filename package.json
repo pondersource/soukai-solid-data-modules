@@ -1,6 +1,6 @@
 {
   "name": "soukai-solid-data-modules",
-  "version": "0.0.4",
+  "version": "0.0.1",
   "description": "Data Modules for Soukai Solid ODM",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
