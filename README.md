@@ -1,6 +1,6 @@
 # Included Modules:
 
-- [Bookmark](https://pdsinterop.org/conventions/bookmark/)
+[Bookmark](https://pdsinterop.org/conventions/bookmark/)
 
 ## Getting Started
 
