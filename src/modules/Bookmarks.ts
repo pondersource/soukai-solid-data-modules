@@ -4,10 +4,12 @@ import { defineSolidModelSchema } from "soukai-solid";
 import { ISoukaiDocumentBase } from "../shared/contracts";
 
 
-export type IBookmarkDocument = ISoukaiDocumentBase & {
+export type ICreateBookmark = {
     title: string
     link: string
 }
+
+export type IBookmark = ISoukaiDocumentBase & ICreateBookmark
 
 export const BookmarkSchema = defineSolidModelSchema({
     rdfContexts: {
@@ -40,7 +42,6 @@ export class BookmarkFactory {
         if (!BookmarkFactory.instance) {
             BookmarkFactory.instance = new BookmarkFactory(containerUrl);
         }
-
         return BookmarkFactory.instance;
     }
 
@@ -52,12 +53,12 @@ export class BookmarkFactory {
         return await Bookmark.find(id);
     }
 
-    async create(payload: IBookmarkDocument) {
+    async create(payload: ICreateBookmark) {
         const bookmark = new Bookmark(payload);
         return await await bookmark.save(this.containerUrl);
     }
 
-    async update(id: string, payload: IBookmarkDocument) {
+    async update(id: string, payload: IBookmark) {
         const bookmark = await Bookmark.find(id);
         return await await bookmark?.update(payload);
     }
