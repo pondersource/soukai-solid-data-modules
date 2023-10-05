@@ -77,14 +77,14 @@ npm publish
 To use the package in a project:
 
 ```bash
-npm i @el3um4s/typescript-npm-package-starter
+npm i pondersource-soukai-solid-data-modules
 ```
 
 and then in a file:
 
 ```ts
-import { ciao } from "@el3um4s/typescript-npm-package-starter";
+import { Bookmark } from "pondersource-soukai-solid-data-modules";
 
-const b = ciao("mondo");
-console.log(b); // Ciao Mondo
+bootSolidModels();
+bootModels({ Bookmark: Bookmark });
 ```

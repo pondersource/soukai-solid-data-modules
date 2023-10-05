@@ -1,5 +1,5 @@
 {
-  "name": "soukai-solid-data-modules",
+  "name": "pondersource-soukai-solid-data-modules",
   "version": "1.0.0",
   "description": "Data Modules for Soukai Solid ODM",
   "main": "lib/index.js",
