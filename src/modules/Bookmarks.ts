@@ -1,6 +1,6 @@
 
 import { FieldType, TimestampField } from "soukai";
-import { SolidModel, defineSolidModelSchema, SolidSchemaDefinition } from "soukai-solid";
+import { defineSolidModelSchema } from "soukai-solid";
 
 
 export interface IBookmark {
