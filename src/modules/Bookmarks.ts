@@ -49,7 +49,7 @@ export class BookmarkFactory {
     }
 
     async get(id: string) {
-        return await Bookmark.find(id)
+        return await Bookmark.find(id);
     }
 
     async create(payload: IBookmarkDocument) {
@@ -58,13 +58,12 @@ export class BookmarkFactory {
     }
 
     async update(id: string, payload: IBookmarkDocument) {
-        const bookmark = await Bookmark.find(id)
+        const bookmark = await Bookmark.find(id);
         return await await bookmark?.update(payload);
     }
 
     async remove(id: string) {
-        const bookmark = await Bookmark.find(id)
+        const bookmark = await Bookmark.find(id);
         return await await bookmark?.delete();
     }
 }
-
