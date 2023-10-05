@@ -1,9 +1,10 @@
 
 import { FieldType, TimestampField } from "soukai";
 import { defineSolidModelSchema } from "soukai-solid";
+import { ISoukaiDocumentBase } from "../shared/contracts";
 
 
-export interface IBookmark {
+export type IBookmarkDocument = ISoukaiDocumentBase & {
     title: string
     link: string
 }
@@ -30,26 +31,6 @@ export const BookmarkSchema = defineSolidModelSchema({
 
 export class Bookmark extends BookmarkSchema { }
 
-// export class Bookmark extends SolidModel {
-
-//     static rdfContexts = {
-//         'bookm': 'http://www.w3.org/2002/01/bookmark#',
-//         'dct': 'http://purl.org/dc/terms/',
-//     };
-
-//     static rdfsClasses = ['bookm:Bookmark'];
-
-//     static fields = {
-//         title: {
-//             type: FieldType.String,
-//             rdfProperty: 'dct:title',
-//         },
-//         link: {
-//             type: FieldType.String,
-//             rdfProperty: 'bookm:recalls',
-//         },
-//     };
-// }
 export class BookmarkFactory {
     private static instance: BookmarkFactory;
 
@@ -63,15 +44,27 @@ export class BookmarkFactory {
         return BookmarkFactory.instance;
     }
 
-    async create(payload: IBookmark) {
-        const bookmark = new Bookmark(payload);
-        return await bookmark.save(this.containerUrl);
+    async getAll() {
+        return await Bookmark.all();
     }
-}
 
+    async get(id: string) {
+        return await Bookmark.find(id)
+    }
 
-export async function createBookmark(payload: IBookmark, containerUrl: string): Promise<Bookmark> {
-    const bookmark = new Bookmark(payload);
-    return await bookmark.save(containerUrl);
+    async create(payload: IBookmarkDocument) {
+        const bookmark = new Bookmark(payload);
+        return await await bookmark.save(this.containerUrl);
+    }
+
+    async update(id: string, payload: IBookmarkDocument) {
+        const bookmark = await Bookmark.find(id)
+        return await await bookmark?.update(payload);
+    }
+
+    async remove(id: string, payload: IBookmarkDocument) {
+        const bookmark = await Bookmark.find(id)
+        return await await bookmark?.delete();
+    }
 }
 

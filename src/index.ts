@@ -1,3 +1,1 @@
-import { Bookmark, BookmarkFactory } from "./modules/Bookmarks";
-
-export { Bookmark, BookmarkFactory };
+export { Bookmark, BookmarkFactory, BookmarkSchema, IBookmarkDocument } from './modules/Bookmarks';
