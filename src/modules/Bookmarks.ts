@@ -1,5 +1,5 @@
 
-import { FieldType } from "soukai";
+import { FieldType, TimestampField } from "soukai";
 import { SolidModel, defineSolidModelSchema, SolidSchemaDefinition } from "soukai-solid";
 
 
@@ -8,16 +8,14 @@ export interface IBookmark {
     link: string
 }
 
-export class Bookmark extends SolidModel {
-
-    static rdfContexts = {
+export const BookmarkSchema = defineSolidModelSchema({
+    rdfContexts: {
         'bookm': 'http://www.w3.org/2002/01/bookmark#',
         'dct': 'http://purl.org/dc/terms/',
-    };
-
-    static rdfsClasses = ['bookm:Bookmark'];
-
-    static fields = {
+    },
+    rdfsClasses: ['bookm:Bookmark'],
+    timestamps: [TimestampField.CreatedAt],
+    fields: {
         title: {
             type: FieldType.String,
             rdfProperty: 'dct:title',
@@ -26,8 +24,32 @@ export class Bookmark extends SolidModel {
             type: FieldType.String,
             rdfProperty: 'bookm:recalls',
         },
-    };
-}
+    },
+});
+
+
+export class Bookmark extends BookmarkSchema { }
+
+// export class Bookmark extends SolidModel {
+
+//     static rdfContexts = {
+//         'bookm': 'http://www.w3.org/2002/01/bookmark#',
+//         'dct': 'http://purl.org/dc/terms/',
+//     };
+
+//     static rdfsClasses = ['bookm:Bookmark'];
+
+//     static fields = {
+//         title: {
+//             type: FieldType.String,
+//             rdfProperty: 'dct:title',
+//         },
+//         link: {
+//             type: FieldType.String,
+//             rdfProperty: 'bookm:recalls',
+//         },
+//     };
+// }
 export class BookmarkFactory {
     private static instance: BookmarkFactory;
 
