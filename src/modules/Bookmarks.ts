@@ -62,7 +62,7 @@ export class BookmarkFactory {
         return await await bookmark?.update(payload);
     }
 
-    async remove(id: string, payload: IBookmarkDocument) {
+    async remove(id: string) {
         const bookmark = await Bookmark.find(id)
         return await await bookmark?.delete();
     }
