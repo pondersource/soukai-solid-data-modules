@@ -2,7 +2,7 @@
 
 [Bookmark](https://pdsinterop.org/conventions/bookmark/)
 
-## Getting Started
+## Usage
 
 ### Install and use the package
 
