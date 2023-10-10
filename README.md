@@ -2,6 +2,7 @@
 Implemented conventions
 
 [Bookmark](https://pdsinterop.org/conventions/bookmark/)
+[Profile](https://pdsinterop.org/conventions/profile/)
 
 ## Usage
 
