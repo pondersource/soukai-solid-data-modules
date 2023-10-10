@@ -1,8 +1,8 @@
 # Conventions implemented:
 Implemented conventions
 
-[Bookmark](https://pdsinterop.org/conventions/bookmark/)
-[Profile](https://pdsinterop.org/conventions/profile/)
+- [Bookmark](https://pdsinterop.org/conventions/bookmark/)
+- [Profile](https://pdsinterop.org/conventions/profile/)
 
 ## Usage
 
@@ -16,13 +16,8 @@ npm i soukai-solid-data-modules
 ```ts
 import { bootModels, setEngine } from "soukai";
 import { SolidEngine, bootSolidModels } from "soukai-solid";
-import {
-  Bookmark,
-  BookmarkFactory,
-  BookmarkSchema,
-  IBookmark,
-  ICreateBookmark,
-} from "soukai-solid-data-modules";
+
+import { Bookmark, BookmarkFactory } from "soukai-solid-data-modules";
 ```
 ### Boot Engine
 ```ts
