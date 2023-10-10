@@ -1,4 +1,4 @@
-# Conventions implemented:
+# Implemented conventions
 Implemented conventions
 
 - [Bookmark](https://pdsinterop.org/conventions/bookmark/)
