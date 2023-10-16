@@ -44,7 +44,7 @@ export class ProfileFactory {
     }
 
     async getAll() {
-        return await Profile.all();
+        return await Profile.from(this.containerUrl).all();
     }
 
     async get(id: string) {

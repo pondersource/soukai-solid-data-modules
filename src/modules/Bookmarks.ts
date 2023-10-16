@@ -46,7 +46,7 @@ export class BookmarkFactory {
     }
 
     async getAll() {
-        return await Bookmark.all();
+        return await Bookmark.from(this.containerUrl).all();
     }
 
     async get(id: string) {
