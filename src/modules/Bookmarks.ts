@@ -14,17 +14,16 @@ export type IBookmark = ISoukaiDocumentBase & ICreateBookmark
 export const BookmarkSchema = defineSolidModelSchema({
     rdfContexts: {
         'bookm': 'http://www.w3.org/2002/01/bookmark#',
-        'dct': 'http://purl.org/dc/terms/',
     },
     rdfsClasses: ['bookm:Bookmark'],
     timestamps: [TimestampField.CreatedAt],
     fields: {
         title: {
             type: FieldType.String,
-            rdfProperty: 'dct:title',
+            rdfProperty: 'purl:title',
         },
         link: {
-            type: FieldType.String,
+            type: FieldType.Key,
             rdfProperty: 'bookm:recalls',
         },
     },
