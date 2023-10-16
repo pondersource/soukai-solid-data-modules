@@ -55,16 +55,16 @@ export class BookmarkFactory {
 
     async create(payload: ICreateBookmark) {
         const bookmark = new Bookmark(payload);
-        return await await bookmark.save(this.containerUrl);
+        return await bookmark.save(this.containerUrl);
     }
 
     async update(id: string, payload: IBookmark) {
         const bookmark = await Bookmark.find(id);
-        return await await bookmark?.update(payload);
+        return await bookmark?.update(payload);
     }
 
     async remove(id: string) {
         const bookmark = await Bookmark.find(id);
-        return await await bookmark?.delete();
+        return await bookmark?.delete();
     }
 }

@@ -1,5 +1,5 @@
 
-import { FieldType, TimestampField } from "soukai";
+import { FieldType } from "soukai";
 import { defineSolidModelSchema } from "soukai-solid";
 import { ISoukaiDocumentBase } from "../shared/contracts";
 
@@ -16,7 +16,6 @@ export type IProfile = ISoukaiDocumentBase & ICreateProfile
 
 export const ProfileSchema = defineSolidModelSchema({
     rdfContexts: {
-        'dct': 'http://purl.org/dc/terms/',
         'ns': 'http://www.w3.org/2006/vcard/ns#',
     },
     rdfsClasses: ['foaf:Person', 'schema:Person'],
@@ -54,16 +53,16 @@ export class ProfileFactory {
 
     async create(payload: ICreateProfile) {
         const profile = new Profile(payload);
-        return await await profile.save(this.containerUrl);
+        return await profile.save(this.containerUrl);
     }
 
     async update(id: string, payload: IProfile) {
         const profile = await Profile.find(id);
-        return await await profile?.update(payload);
+        return await profile?.update(payload);
     }
 
     async remove(id: string) {
         const profile = await Profile.find(id);
-        return await await profile?.delete();
+        return await profile?.delete();
     }
 }
