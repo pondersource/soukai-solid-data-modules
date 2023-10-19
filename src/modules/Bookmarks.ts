@@ -2,6 +2,7 @@
 import { FieldType, TimestampField } from "soukai";
 import { defineSolidModelSchema } from "soukai-solid";
 import { ISoukaiDocumentBase } from "../shared/contracts";
+import { fetchContainerUrl, registerInTypeIndex, urlParentDirectory } from "../shared/utils";
 
 
 export type ICreateBookmark = {
@@ -30,27 +31,46 @@ export const BookmarkSchema = defineSolidModelSchema({
     },
 });
 
-
 export class Bookmark extends BookmarkSchema { }
+
+
+// interface GetFactoryArgs { fetch: any; containerUrl: string; baseURL: string; webId: string; typeIndexUrl?: string; }
+
+// export const getFactory = async (args: GetFactoryArgs) => {
+//     return await BookmarkFactory.getInstance({
+//         ...args,
+//         forClass: Bookmark.rdfsClasses[0],
+//     });
+// };
 
 export class BookmarkFactory {
     private static instance: BookmarkFactory;
 
     private constructor(private containerUrl: string) { }
 
-    public static getInstance(containerUrl: string): BookmarkFactory {
+    public static async getInstance({
+        containerUrl, forClass, baseURL, webId, typeIndexUrl, fetch
+    }: {
+        containerUrl: string,
+        forClass: string,
+        baseURL: string,
+        webId: string,
+        typeIndexUrl?: string,
+        fetch?: any
+    }): Promise<BookmarkFactory> {
         if (!BookmarkFactory.instance) {
-            BookmarkFactory.instance = new BookmarkFactory(containerUrl);
+            const _containerUrl = await fetchContainerUrl({ fetch, forClass, baseURL, webId, typeIndexUrl });
+            BookmarkFactory.instance = new BookmarkFactory(containerUrl ?? _containerUrl);
         }
         return BookmarkFactory.instance;
     }
 
     async getAll() {
-        return await Bookmark.all();
+        return await Bookmark.from(this.containerUrl).all();
     }
 
     async get(id: string) {
-        return await Bookmark.find(id);
+        return await Bookmark.from(this.containerUrl).find(id);
     }
 
     async create(payload: ICreateBookmark) {
@@ -59,8 +79,23 @@ export class BookmarkFactory {
     }
 
     async update(id: string, payload: IBookmark) {
-        const bookmark = await Bookmark.find(id);
-        return await await bookmark?.update(payload);
+        // const bookmark = await Bookmark.find(id);
+        // return await await bookmark?.update(payload);
+        const bookmark = new Bookmark(payload);
+
+        const bookmarkObj = await bookmark.save(this.containerUrl);
+
+        const instanceContainer = urlParentDirectory(bookmarkObj.url);
+
+        registerInTypeIndex({
+            forClass: Bookmark.rdfsClasses[0],
+            instanceContainer: instanceContainer ?? this.containerUrl,
+            typeIndexUrl:
+                "https://reza-soltani.solidcommunity.net/settings/privateTypeIndex.ttl",
+        });
+
+        return bookmarkObj;
+
     }
 
     async remove(id: string) {
