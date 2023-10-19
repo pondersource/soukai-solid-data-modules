@@ -17,13 +17,12 @@ type FetchContainrURLArgs = {
 
 export const fetchContainerUrl = async (args: FetchContainrURLArgs) => {
     try {
-        // const typeIndexUrl = args.typeIndexUrl ?? "https://reza-soltani.solidcommunity.net/settings/privateTypeIndex.ttl";
         const typeIndexUrl = args.typeIndexUrl ?? await createPrivateTypeIndex(args.baseURL, args.webId, `${args.baseURL}profile/card`, fetch);
 
         const document = await fetchSolidDocument(typeIndexUrl, args.fetch);
         const containerType = document.statements(undefined, "rdf:type", "solid:TypeRegistration")
             .find((statement) =>
-                document.contains(statement.subject.value, "solid:forClass", args.forClass) // "http://www.w3.org/2002/01/bookmark#Bookmark"
+                document.contains(statement.subject.value, "solid:forClass", args.forClass)
                 &&
                 document.contains(statement.subject.value, "solid:instanceContainer")
             );

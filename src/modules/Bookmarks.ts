@@ -43,23 +43,19 @@ export class Bookmark extends BookmarkSchema { }
 //     });
 // };
 
+interface GetInstanceArgs { forClass: string, baseURL: string, webId: string, typeIndexUrl?: string, fetch?: any }
+
 export class BookmarkFactory {
     private static instance: BookmarkFactory;
 
     private constructor(private containerUrl: string) { }
 
-    public static async getInstance({
-        containerUrl, forClass, baseURL, webId, typeIndexUrl, fetch
-    }: {
-        containerUrl: string,
-        forClass: string,
-        baseURL: string,
-        webId: string,
-        typeIndexUrl?: string,
-        fetch?: any
-    }): Promise<BookmarkFactory> {
+    public static async getInstance(args?: GetInstanceArgs, containerUrl?: string): Promise<BookmarkFactory> {
         if (!BookmarkFactory.instance) {
-            const _containerUrl = await fetchContainerUrl({ fetch, forClass, baseURL, webId, typeIndexUrl });
+            let _containerUrl = ""
+            if (args) {
+                _containerUrl = await fetchContainerUrl(args) ?? ""
+            }
             BookmarkFactory.instance = new BookmarkFactory(containerUrl ?? _containerUrl);
         }
         return BookmarkFactory.instance;
@@ -75,31 +71,37 @@ export class BookmarkFactory {
 
     async create(payload: ICreateBookmark) {
         const bookmark = new Bookmark(payload);
-        return await await bookmark.save(this.containerUrl);
-    }
 
-    async update(id: string, payload: IBookmark) {
-        // const bookmark = await Bookmark.find(id);
-        // return await await bookmark?.update(payload);
-        const bookmark = new Bookmark(payload);
+        const instanceContainer = urlParentDirectory(bookmark?.url ?? "");
 
-        const bookmarkObj = await bookmark.save(this.containerUrl);
-
-        const instanceContainer = urlParentDirectory(bookmarkObj.url);
-
-        registerInTypeIndex({
+        await registerInTypeIndex({
             forClass: Bookmark.rdfsClasses[0],
             instanceContainer: instanceContainer ?? this.containerUrl,
             typeIndexUrl:
                 "https://reza-soltani.solidcommunity.net/settings/privateTypeIndex.ttl",
         });
 
-        return bookmarkObj;
+        return await bookmark.save(this.containerUrl);
+    }
+
+    async update(id: string, payload: IBookmark) {
+        const bookmark = await Bookmark.find(id);
+
+        // const instanceContainer = urlParentDirectory(bookmark?.url ?? "");
+
+        // await registerInTypeIndex({
+        //     forClass: Bookmark.rdfsClasses[0],
+        //     instanceContainer: instanceContainer ?? this.containerUrl,
+        //     typeIndexUrl:
+        //         "https://reza-soltani.solidcommunity.net/settings/privateTypeIndex.ttl",
+        // });
+
+        return await bookmark?.update(payload);
 
     }
 
     async remove(id: string) {
         const bookmark = await Bookmark.find(id);
-        return await await bookmark?.delete();
+        return await bookmark?.delete();
     }
 }
