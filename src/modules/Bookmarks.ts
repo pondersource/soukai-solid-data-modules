@@ -1,8 +1,8 @@
 
 import { FieldType, TimestampField } from "soukai";
-import { defineSolidModelSchema } from "soukai-solid";
+import { Fetch, SolidContainer, defineSolidModelSchema } from "soukai-solid";
 import { ISoukaiDocumentBase } from "../shared/contracts";
-import { fetchContainerUrl, registerInTypeIndex, urlParentDirectory } from "../shared/utils";
+import { createTypeIndex, getTypeIndexFromPofile, registerInTypeIndex } from "../shared/utils";
 
 export type ICreateBookmark = {
     title: string
@@ -33,7 +33,11 @@ export const BookmarkSchema = defineSolidModelSchema({
 export class Bookmark extends BookmarkSchema { }
 
 
-interface GetInstanceArgs { forClass: string, baseURL: string, webId: string, typeIndexUrl?: string, fetch?: any }
+interface GetInstanceArgs {
+    webId: string,
+    fetch?: Fetch
+}
+
 export class BookmarkFactory {
     private static instance: BookmarkFactory;
 
@@ -41,11 +45,40 @@ export class BookmarkFactory {
 
     public static async getInstance(args?: GetInstanceArgs, containerUrl?: string): Promise<BookmarkFactory> {
         if (!BookmarkFactory.instance) {
-            let _containerUrl = ""
-            if (args) {
-                _containerUrl = await fetchContainerUrl(args) ?? ""
+            try {
+                const baseURL = args?.webId.split("profile")[0]
+
+                let _containerUrl = ""
+
+                const typeIndexUrl = await getTypeIndexFromPofile({
+                    webId: args?.webId ?? "",
+                    fetch: args?.fetch,
+                    typePredicate: "solid:privateTypeIndex"
+                })
+
+                if (typeIndexUrl) {
+                    // Get containerUrl from typeIndex
+                    const _container = (await SolidContainer.fromTypeIndex(typeIndexUrl, Bookmark))
+                    _containerUrl = _container?.url ?? ""
+                } else {
+                    // Create TypeIndex
+                    const typeIndexUrl = await createTypeIndex(args?.webId!, "private", args?.fetch)
+                    _containerUrl = containerUrl ?? baseURL + "bookmarks/"
+
+                    // add containerUrl to typeIndex
+                    // TODO: it inserts two instances
+                    await registerInTypeIndex({
+                        forClass: Bookmark.rdfsClasses[0],
+                        instanceContainer: _containerUrl,
+                        typeIndexUrl: typeIndexUrl,
+                    });
+                }
+
+                BookmarkFactory.instance = new BookmarkFactory(_containerUrl);
+
+            } catch (error: any) {
+                console.log(error.message);
             }
-            BookmarkFactory.instance = new BookmarkFactory(containerUrl ?? _containerUrl);
         }
         return BookmarkFactory.instance;
     }
@@ -60,15 +93,6 @@ export class BookmarkFactory {
 
     async create(payload: ICreateBookmark) {
         const bookmark = new Bookmark(payload);
-
-        const instanceContainer = urlParentDirectory(bookmark?.url ?? "");
-
-        await registerInTypeIndex({
-            forClass: Bookmark.rdfsClasses[0],
-            instanceContainer: instanceContainer ?? this.containerUrl,
-            typeIndexUrl: "https://reza-soltani.solidcommunity.net/settings/privateTypeIndex.ttl",
-        });
-
         return await bookmark.save(this.containerUrl);
     }
 
@@ -82,4 +106,3 @@ export class BookmarkFactory {
         return await bookmark?.delete();
     }
 }
-
