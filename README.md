@@ -27,7 +27,14 @@ bootModels({ Bookmark: Bookmark });
 
 ### get Factory instance (it's a singleton)
 ```ts
-const bookmarkFactory = BookmarkFactory.getInstance(baseUri + "/bookmarks/");
+const factory = await BookmarkFactory.getInstance(
+    {
+        webId: userSession?.info.webId,
+        fetch: userSession?.fetch,
+        typePredicate: "solid:privateTypeIndex"
+    },
+    "bookmarks/" // you can optionally pass a path to override typeRegistration
+);
 ```
 
 ### use factory instance to CRUD over bookmarks
