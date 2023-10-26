@@ -1,6 +1,12 @@
 import { FieldType, TimestampField } from "soukai";
-import { defineSolidModelSchema } from "soukai-solid";
+import { SolidContainer, defineSolidModelSchema } from "soukai-solid";
 import { ISoukaiDocumentBase } from "../shared/contracts";
+import {
+  createTypeIndex,
+  getTypeIndexFromPofile,
+  registerInTypeIndex,
+} from "../utils/typeIndexHelpers";
+import { GetInstanceArgs } from "../types";
 
 export type ICreateProfile = {
   name: string;
@@ -37,33 +43,89 @@ export class ProfileFactory {
 
   private constructor(private containerUrl: string) {}
 
-  public static getInstance(containerUrl: string): ProfileFactory {
+  public static async getInstance(
+    args?: GetInstanceArgs,
+    containerUrl?: string
+  ): Promise<ProfileFactory> {
     if (!ProfileFactory.instance) {
-      ProfileFactory.instance = new ProfileFactory(containerUrl);
+      try {
+        const baseURL = args?.webId.split("profile")[0]; // https://example.solidcommunity.net/
+
+        containerUrl = `${baseURL}${containerUrl ?? "bookmarks/"}`.replace(
+          "//",
+          "/"
+        ); // normalize url
+
+        let _containerUrl = "";
+
+        const typeIndexUrl = await getTypeIndexFromPofile({
+          webId: args?.webId ?? "",
+          fetch: args?.fetch,
+          typePredicate: args?.typePredicate ?? "solid:privateTypeIndex",
+        });
+
+        if (typeIndexUrl) {
+          const _container = await SolidContainer.fromTypeIndex(
+            typeIndexUrl,
+            Profile
+          );
+          if (!_container) {
+            _containerUrl = containerUrl ?? baseURL + "bookmarks/";
+
+            await registerInTypeIndex({
+              forClass: Profile.rdfsClasses[0],
+              instanceContainer: _containerUrl,
+              typeIndexUrl: typeIndexUrl,
+            });
+          } else {
+            _containerUrl = _container?.url ?? "";
+          }
+        } else {
+          // Create TypeIndex
+          const typeIndexUrl = await createTypeIndex(
+            args?.webId!,
+            "private",
+            args?.fetch
+          );
+          _containerUrl = containerUrl ?? baseURL + "bookmarks/";
+
+          // add containerUrl to typeIndex
+          // TODO: it inserts two instances
+          await registerInTypeIndex({
+            forClass: Profile.rdfsClasses[0],
+            instanceContainer: _containerUrl,
+            typeIndexUrl: typeIndexUrl,
+          });
+        }
+
+        ProfileFactory.instance = new ProfileFactory(_containerUrl);
+      } catch (error: any) {
+        console.log(error.message);
+      }
     }
     return ProfileFactory.instance;
   }
 
   async getAll() {
-    return await Profile.all();
+    return await Profile.from(this.containerUrl).all();
   }
 
   async get(id: string) {
-    return await Profile.find(id);
+    return await Profile.from(this.containerUrl).find(id);
   }
 
   async create(payload: ICreateProfile) {
     const profile = new Profile(payload);
-    return await await profile.save(this.containerUrl);
+    return await profile.save(this.containerUrl);
   }
 
   async update(id: string, payload: IProfile) {
     const profile = await Profile.find(id);
-    return await await profile?.update(payload);
+    return await profile?.update(payload);
   }
 
   async remove(id: string) {
     const profile = await Profile.find(id);
-    return await await profile?.delete();
+    return await profile?.delete();
   }
 }

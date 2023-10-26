@@ -6,6 +6,7 @@ import {
   getTypeIndexFromPofile,
   registerInTypeIndex,
 } from "../utils/typeIndexHelpers";
+import { GetInstanceArgs } from "../types";
 
 export type ICreateBookmark = {
   title: string;
@@ -34,12 +35,6 @@ export const BookmarkSchema = defineSolidModelSchema({
 });
 
 export class Bookmark extends BookmarkSchema {}
-
-interface GetInstanceArgs {
-  webId: string;
-  fetch?: Fetch;
-  typePredicate?: "solid:publicTypeIndex" | "solid:privateTypeIndex";
-}
 
 export class BookmarkFactory {
   private static instance: BookmarkFactory;
