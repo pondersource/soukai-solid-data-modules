@@ -1,3 +1,3 @@
 export interface ISoukaiDocumentBase {
-    url: string
+  url: string;
 }
