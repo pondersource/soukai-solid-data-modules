@@ -5,14 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "clean": "rm -rf lib/",
-    "build": "npm run clean && tsc",
-    "prepare": "npm run build",
-    "version": "git add -A src",
-    "postversion": "git push && git push --tags",
-    "check-updates": "npx npm-check-updates",
-    "check-updates:minor": "npx npm-check-updates --target minor",
-    "check-updates:patch": "npx npm-check-updates --target patch"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -39,7 +32,8 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "soukai-solid": "^0.5.1",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "soukai": "0.5.1-next.6ceeddd517fac8fd180856fb3867cc33c1fa1b0b",
+    "soukai-solid": "0.5.1-next.17ce9fccdbfa3d99bd1718e9aaf169cea189ee8a"
   }
 }

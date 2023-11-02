@@ -4,7 +4,7 @@ import {
   updateSolidDocument,
 } from "@noeldemartin/solid-utils";
 import { getEngine } from "soukai";
-import { Fetch, SolidTypeRegistration } from "soukai-solid";
+import { Fetch, SolidContainer, SolidEngine, SolidModel, SolidTypeRegistration } from "soukai-solid";
 import { v4 } from "uuid";
 import { urlParentDirectory } from "./urlHelpers";
 
@@ -79,3 +79,93 @@ export async function createTypeIndex(
 
   return typeIndexUrl;
 }
+
+async function findRegistrations(
+  typeIndexUrl: string,
+  type: string | string[],
+  predicate: string,
+  fetch?: Fetch
+): Promise<string[]> {
+  const typeIndex = await fetchSolidDocument(typeIndexUrl, fetch);
+  const types = Array.isArray(type) ? type : [type];
+
+  return types
+    .map((type) =>
+      typeIndex
+        .statements(undefined, "rdf:type", "solid:TypeRegistration")
+        .filter((statement) =>
+          typeIndex.contains(statement.subject.value, "solid:forClass", type)
+        )
+        .map((statement) =>
+          typeIndex.statements(statement.subject.value, predicate)
+        )
+        .flat()
+        .map((statement) => statement.object.value)
+        .filter((url) => !!url)
+    )
+    .flat();
+}
+
+
+export async function findContainerRegistrations(
+  typeIndexUrl: string,
+  type: string | string[],
+  fetch?: Fetch
+): Promise<string[]> {
+  return findRegistrations(
+    typeIndexUrl,
+    type,
+    "solid:instanceContainer",
+    fetch
+  );
+}
+
+export async function findInstanceRegistrations(
+  typeIndexUrl: string,
+  type: string | string[],
+  fetch?: Fetch
+): Promise<string[]> {
+  return findRegistrations(typeIndexUrl, type, "solid:instance", fetch);
+}
+
+
+export const fromTypeIndex = async (
+  typeIndexUrl: string,
+  childrenModelClass: typeof SolidModel
+) => {
+  const engine = getEngine();
+
+  const fetch = engine instanceof SolidEngine ? engine.getFetch() : undefined;
+
+  const containerPromise = findContainerRegistrations(typeIndexUrl, childrenModelClass.rdfsClasses, fetch);
+
+  const instancePromise = findInstanceRegistrations(typeIndexUrl, childrenModelClass.rdfsClasses, fetch);
+
+  const allPromise = Promise.all([containerPromise, instancePromise]);
+
+  try {
+    const [containers, instances] = await allPromise;
+
+    const result = [
+      ...containers.map(url => SolidContainer.newInstance({ url }, true)),
+      ...instances.map(url => SolidContainer.newInstance({ url }, true))
+    ]
+
+    return result
+
+  } catch (error) {
+    console.log("🚀 ~ file: utils.ts:389 ~ error:", error)
+  }
+
+
+  // const c_urls = await findContainerRegistrations(typeIndexUrl, childrenModelClass.rdfsClasses, fetch);
+
+  // const i_urls = await findInstanceRegistrations(typeIndexUrl, childrenModelClass.rdfsClasses, fetch);
+
+  // const urls = [...c_urls, ...i_urls]
+
+  // console.log("🚀 ~ file: utils.ts:383 ~ urls:", urls)
+
+
+  // return urls.map(url => SolidContainer.newInstance({ url }, true));
+};
