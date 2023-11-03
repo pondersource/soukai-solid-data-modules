@@ -8,6 +8,7 @@ import {
     registerInTypeIndex,
 } from "../utils/typeIndexHelpers";
 import { GetInstanceArgs } from "../types";
+import { v4 } from "uuid";
 
 export type ICreateBookmark = {
     title: string;
@@ -139,8 +140,15 @@ export class BookmarkFactory {
     }
 
     async create(payload: ICreateBookmark) {
-        const bookmark = new Bookmark(payload);
-        return await bookmark.save(this.containerUrls[0]);
+        const id = v4()
+
+        const bookmark = new Bookmark({
+            ...payload,
+            id: id,
+            url: `${this.containerUrls[0]}${id}`
+        });
+
+        return await bookmark.save();
     }
 
     async update(id: string, payload: IBookmark) {
