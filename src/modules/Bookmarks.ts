@@ -22,7 +22,7 @@ export const BookmarkSchema = defineSolidModelSchema({
         bookm: "http://www.w3.org/2002/01/bookmark#",
     },
     rdfsClasses: ["bookm:Bookmark"],
-    timestamps: [TimestampField.CreatedAt],
+    timestamps: [TimestampField.CreatedAt, TimestampField.UpdatedAt],
     fields: {
         title: {
             type: FieldType.String,
