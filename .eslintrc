@@ -4,13 +4,13 @@
     "plugins": [
       "@typescript-eslint"
     ],
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/eslint-recommended",
-      "plugin:@typescript-eslint/recommended"
-    ],
+    // "extends": [
+    //   "eslint:recommended",
+    //   "plugin:@typescript-eslint/eslint-recommended",
+    //   "plugin:@typescript-eslint/recommended"
+    // ],
     "rules": {
-      "no-console": 1,
+      // "no-console": 1,
       "semi-style": ["error", "last"],
       "semi": [2, "always"]
     }

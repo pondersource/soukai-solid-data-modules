@@ -1,10 +1,15 @@
 import { FieldType } from "soukai";
-import { SolidContainer, SolidModel, defineSolidModelSchema } from "soukai-solid";
+import {
+  defineSolidModelSchema,
+  SolidContainer,
+  SolidDocument,
+  SolidModel,
+} from "soukai-solid";
+import { v4 } from "uuid";
 import { ISoukaiDocumentBase } from "../shared/contracts";
 import { GetInstanceArgs } from "../types";
 import {
   createTypeIndex,
-  fromTypeIndex,
   getTypeIndexFromPofile,
   registerInTypeIndex,
 } from "../utils/typeIndexHelpers";
@@ -37,53 +42,81 @@ export const ProfileSchema = defineSolidModelSchema({
   },
 });
 
-export class Profile extends ProfileSchema { }
+export class Profile extends ProfileSchema {}
 
 export class ProfileFactory {
   private static instance: ProfileFactory;
 
-  private constructor(private containerUrls: string[] = []) { }
+  private constructor(
+    private containerUrls: string[] = [],
+    private instancesUrls: string[] = []
+  ) {}
 
-  public static async getInstance(args?: GetInstanceArgs, defaultContainerUrl?: string): Promise<ProfileFactory> {
+  public static async getInstance(
+    args?: GetInstanceArgs,
+    defaultContainerUrl?: string
+  ): Promise<ProfileFactory> {
     if (!ProfileFactory.instance) {
       try {
-        const baseURL = args?.webId.split("profile")[0] // https://example.solidcommunity.net/
+        const baseURL = args?.webId.split("profile")[0]; // https://example.solidcommunity.net/
 
-        defaultContainerUrl = `${baseURL}${defaultContainerUrl ?? "bookmarks/"}` //.replace("//", "/") // normalize url
+        defaultContainerUrl = `${baseURL}${
+          defaultContainerUrl ?? "bookmarks/"
+        }`;
 
-        console.log("🚀 ~ file: Bookmarks.ts:57 ~ BookmarkFactory ~ getInstance ~ defaultContainerUrl:", defaultContainerUrl)
-        let _containerUrls: string[] = []
+        let _containerUrls: string[] = [];
+        let _instancesUrls: string[] = [];
 
         const typeIndexUrl = await getTypeIndexFromPofile({
           webId: args?.webId ?? "",
           fetch: args?.fetch,
-          typePredicate: args?.typePredicate ?? "solid:privateTypeIndex"
-        })
+          typePredicate: args?.isPrivate
+            ? "solid:privateTypeIndex"
+            : "solid:publicTypeIndex",
+        });
 
         if (typeIndexUrl) {
-          const res = await fromTypeIndex(typeIndexUrl, Profile)
-          console.log("🚀 ~ file: Bookmarks.ts:70 ~ BookmarkFactory ~ getInstance ~ res:", res?.map(c => c.url))
+          // const res = await fromTypeIndex(typeIndexUrl, Bookmark)
 
-          const _containers = await SolidContainer.fromTypeIndex(typeIndexUrl, Profile)
-          console.log("🚀 ~ file: Bookmarks.ts:68 ~ BookmarkFactory ~ getInstance ~ _containers:", _containers.map(c => c.url))
+          const _containers = await SolidContainer.fromTypeIndex(
+            typeIndexUrl,
+            Profile
+          );
 
           if (!_containers || !_containers.length) {
-
-            _containerUrls.push(defaultContainerUrl)
+            _containerUrls.push(defaultContainerUrl);
 
             await registerInTypeIndex({
               forClass: Profile.rdfsClasses[0],
               instanceContainer: _containerUrls[0],
               typeIndexUrl: typeIndexUrl,
             });
-
           } else {
-            _containerUrls = [..._containerUrls, ..._containers.map(c => c.url)]
+            _containerUrls = [
+              ..._containerUrls,
+              ..._containers.map((c) => c.url),
+            ];
+          }
+
+          const _instances = await SolidDocument.fromTypeIndex(
+            typeIndexUrl,
+            Profile
+          );
+
+          if (_instances.length) {
+            _instancesUrls = [
+              ..._instancesUrls,
+              ..._instances.map((c) => c.url),
+            ];
           }
         } else {
           // Create TypeIndex
-          const typeIndexUrl = await createTypeIndex(args?.webId!, "private", args?.fetch)
-          _containerUrls.push(defaultContainerUrl)
+          const typeIndexUrl = await createTypeIndex(
+            args?.webId!,
+            "private",
+            args?.fetch
+          );
+          _containerUrls.push(defaultContainerUrl);
 
           // TODO: it inserts two instances
           await registerInTypeIndex({
@@ -93,8 +126,10 @@ export class ProfileFactory {
           });
         }
 
-        ProfileFactory.instance = new ProfileFactory(_containerUrls);
-
+        ProfileFactory.instance = new ProfileFactory(
+          _containerUrls,
+          _instancesUrls
+        );
       } catch (error: any) {
         console.log(error.message);
       }
@@ -103,73 +138,52 @@ export class ProfileFactory {
   }
 
   async getAll() {
-    const promises = this.containerUrls.map(c => Profile.from(c).all())
+    const containerPromises = this.containerUrls.map((c) =>
+      Profile.from(c).all()
+    );
+    const instancePromises = this.instancesUrls.map((i) =>
+      Profile.all({ $in: [i] })
+    );
 
-    const allPromise = Promise.all(promises);
+    const allPromise = Promise.all([...containerPromises, ...instancePromises]);
 
     try {
       const values = (await allPromise).flat();
-      return values
+      return values;
     } catch (error) {
       console.log(error);
-      return [] as (Profile & SolidModel)[]
+      return [] as (Profile & SolidModel)[];
     }
-
-    // return await Bookmark.from(this.containerUrl).all();
   }
 
-  async get(id: string) {
-    const promises = this.containerUrls.map(c => Profile.from(c).find(id))
-    const allPromise = Promise.all(promises);
-    try {
-      const values = (await allPromise).flat();
+  async get(pk: string) {
+    const res = await Profile.findOrFail(pk);
 
-      return values[0]
-
-    } catch (error) {
-      console.log(error);
-      return undefined
-    }
-    // return await Bookmark.from(this.containerUrl).find(id);
+    return res;
   }
 
   async create(payload: ICreateProfile) {
-    const bookmark = new Profile(payload);
-    return await bookmark.save(this.containerUrls[0]);
+    const doc = new Profile(payload);
+    return await doc.save(this.containerUrls[0]);
   }
 
-  async update(id: string, payload: IProfile) {
-    const promises = this.containerUrls.map(c => Profile.from(c).find(id))
-    const allPromise = Promise.all(promises);
+  async update(pk: string, payload: IProfile) {
     try {
-      const values = (await allPromise).flat();
-
-      return values.map(v => v?.update(payload))
-
+      const res = await Profile.findOrFail(pk);
+      return await res.update(payload);
     } catch (error) {
       console.log(error);
-      return undefined
+      return undefined;
     }
-
-
-    // const bookmark = await Bookmark.from(this.containerUrl).find(id)
-    // return await bookmark?.update(payload);
   }
 
-  async remove(id: string) {
-    const promises = this.containerUrls.map(c => Profile.from(c).find(id))
-    const allPromise = Promise.all(promises);
+  async remove(pk: string) {
     try {
-      const values = (await allPromise).flat();
-
-      return values.map(async (v) => await v?.delete())
-
+      const res = await Profile.findOrFail(pk);
+      return await res.delete();
     } catch (error) {
       console.log(error);
-      return undefined
+      return undefined;
     }
-
-    // const bookmark = await Bookmark.from(this.containerUrl).find(id)
-    // return await bookmark?.delete();
   }
 }

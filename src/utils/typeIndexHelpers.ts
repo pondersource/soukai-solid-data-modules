@@ -4,7 +4,13 @@ import {
   updateSolidDocument,
 } from "@noeldemartin/solid-utils";
 import { getEngine } from "soukai";
-import { Fetch, SolidContainer, SolidEngine, SolidModel, SolidTypeRegistration } from "soukai-solid";
+import {
+  Fetch,
+  SolidContainer,
+  SolidEngine,
+  SolidModel,
+  SolidTypeRegistration,
+} from "soukai-solid";
 import { v4 } from "uuid";
 import { urlParentDirectory } from "./urlHelpers";
 
@@ -106,7 +112,6 @@ async function findRegistrations(
     .flat();
 }
 
-
 export async function findContainerRegistrations(
   typeIndexUrl: string,
   type: string | string[],
@@ -128,7 +133,6 @@ export async function findInstanceRegistrations(
   return findRegistrations(typeIndexUrl, type, "solid:instance", fetch);
 }
 
-
 export const fromTypeIndex = async (
   typeIndexUrl: string,
   childrenModelClass: typeof SolidModel
@@ -137,9 +141,17 @@ export const fromTypeIndex = async (
 
   const fetch = engine instanceof SolidEngine ? engine.getFetch() : undefined;
 
-  const containerPromise = findContainerRegistrations(typeIndexUrl, childrenModelClass.rdfsClasses, fetch);
+  const containerPromise = findContainerRegistrations(
+    typeIndexUrl,
+    childrenModelClass.rdfsClasses,
+    fetch
+  );
 
-  const instancePromise = findInstanceRegistrations(typeIndexUrl, childrenModelClass.rdfsClasses, fetch);
+  const instancePromise = findInstanceRegistrations(
+    typeIndexUrl,
+    childrenModelClass.rdfsClasses,
+    fetch
+  );
 
   const allPromise = Promise.all([containerPromise, instancePromise]);
 
@@ -147,16 +159,14 @@ export const fromTypeIndex = async (
     const [containers, instances] = await allPromise;
 
     const result = [
-      ...containers.map(url => SolidContainer.newInstance({ url }, true)),
-      ...instances.map(url => SolidContainer.newInstance({ url }, true))
-    ]
+      ...containers.map((url) => SolidContainer.newInstance({ url }, true)),
+      ...instances.map((url) => SolidContainer.newInstance({ url }, true)),
+    ];
 
-    return result
-
+    return result;
   } catch (error) {
-    console.log("🚀 ~ file: utils.ts:389 ~ error:", error)
+    console.log("🚀 ~ file: utils.ts:389 ~ error:", error);
   }
-
 
   // const c_urls = await findContainerRegistrations(typeIndexUrl, childrenModelClass.rdfsClasses, fetch);
 
@@ -165,7 +175,6 @@ export const fromTypeIndex = async (
   // const urls = [...c_urls, ...i_urls]
 
   // console.log("🚀 ~ file: utils.ts:383 ~ urls:", urls)
-
 
   // return urls.map(url => SolidContainer.newInstance({ url }, true));
 };
