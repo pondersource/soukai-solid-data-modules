@@ -15,8 +15,8 @@ import {
 } from "../utils/typeIndexHelpers";
 
 export type ICreateBookmark = {
-  hasTopic: string;
-  title: string;
+  topic: string;
+  label: string;
   link: string;
 };
 
@@ -24,25 +24,28 @@ export type IBookmark = ISoukaiDocumentBase & ICreateBookmark;
 
 export const BookmarkSchema = defineSolidModelSchema({
   rdfContexts: {
-    bookm: "http://www.w3.org/2002/01/bookmark#",
-    dct: "http://purl.org/dc/terms/",
+    bk: "http://www.w3.org/2002/01/bookmark#",
   },
-  rdfsClasses: ["bookm:Bookmark"],
+
+  rdfsClasses: ["bk:Bookmark"],
+
   timestamps: [TimestampField.CreatedAt, TimestampField.UpdatedAt],
+
   fields: {
-    hasTopic: {
+    topic: {
       type: FieldType.Any,
-      rdfProperty: "bookm:hasTopic",
+      rdfProperty: "bk:hasTopic",
     },
-    title: {
+    label: {
       type: FieldType.String,
-      rdfProperty: "dct:title",
+      rdfProperty: "rdfs:label",
     },
     link: {
       type: FieldType.String,
-      rdfProperty: "bookm:recalls",
+      rdfProperty: "bk:recalls",
     },
   },
+
 });
 
 export class Bookmark extends BookmarkSchema {
@@ -59,7 +62,7 @@ export class BookmarkFactory {
   private constructor(
     private containerUrls: string[] = [],
     private instancesUrls: string[] = []
-  ) {}
+  ) { }
 
   public static async getInstance(
     args?: GetInstanceArgs,
@@ -69,9 +72,7 @@ export class BookmarkFactory {
       try {
         const baseURL = args?.webId.split("profile")[0]; // https://example.solidcommunity.net/
 
-        defaultContainerUrl = `${baseURL}${
-          defaultContainerUrl ?? "bookmarks/"
-        }`;
+        defaultContainerUrl = `${baseURL}${defaultContainerUrl ?? "bookmarks/"}`;
 
         let _containerUrls: string[] = [];
         let _instancesUrls: string[] = [];
