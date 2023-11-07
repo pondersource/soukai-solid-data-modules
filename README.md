@@ -31,7 +31,7 @@ const factory = await BookmarkFactory.getInstance(
     {
         webId: userSession?.info.webId,
         fetch: userSession?.fetch,
-        typePredicate: "solid:privateTypeIndex"
+        isPrivate: true,
     },
     "bookmarks/" // you can optionally pass a path to override typeRegistration
 );
