@@ -41,7 +41,7 @@ export const BookmarkSchema = defineSolidModelSchema({
       rdfProperty: "rdfs:label",
     },
     link: {
-      type: FieldType.String,
+      type: FieldType.Key,
       rdfProperty: "bk:recalls",
     },
   },
