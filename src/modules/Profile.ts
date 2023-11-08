@@ -3,15 +3,13 @@ import {
   defineSolidModelSchema,
   SolidContainer,
   SolidDocument,
-  SolidModel,
+  SolidModel
 } from "soukai-solid";
-import { v4 } from "uuid";
-import { ISoukaiDocumentBase } from "../shared/contracts";
-import { GetInstanceArgs } from "../types";
+import { GetInstanceArgs, ISoukaiDocumentBase } from "../types";
 import {
   createTypeIndex,
   getTypeIndexFromPofile,
-  registerInTypeIndex,
+  registerInTypeIndex
 } from "../utils/typeIndexHelpers";
 
 export type ICreateProfile = {

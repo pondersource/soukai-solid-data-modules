@@ -1,6 +1,6 @@
 import type { JsonLD } from '@noeldemartin/solid-utils';
 
-import IRI from '@/solid/utils/IRI';
+import IRI from '@/utils/IRI';
 
 class RDF {
 

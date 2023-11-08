@@ -1,8 +1,6 @@
 import { EventEmitter } from 'events';
 import StubResponse from './StubResponse';
 
-// import StubResponse from '@/testing/lib/stubs/StubResponse';
-
 class StubFetcher extends EventEmitter {
 
     public fetchSpy!: jest.SpyInstance<Promise<Response>, [RequestInfo, RequestInit?]>;
