@@ -33,7 +33,7 @@ export const BookmarkSchema = defineSolidModelSchema({
 
   fields: {
     topic: {
-      type: FieldType.Any,
+      type: FieldType.String,
       rdfProperty: "bk:hasTopic",
     },
     label: {
