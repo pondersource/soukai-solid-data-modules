@@ -1,7 +1,6 @@
 import { faker } from "@noeldemartin/faker";
 import { bootModels, setEngine } from "soukai";
 import { SolidEngine } from "soukai-solid";
-
 import { Bookmark } from "../modules/Bookmarks";
 import { sharedModels } from "../utils/sharedModels";
 import StubFetcher from "../utils/StubFetcher";
@@ -31,25 +30,20 @@ describe("Solid CRUD", () => {
     // Act
     const bookmark = new Bookmark({ title, link });
 
-    const res = await bookmark.save();
-    // console.log("🚀 ~ file: Bookmark.test.ts:35 ~ it ~ res:", res)
+    await bookmark.save();
 
     // Assert
     expect(fetch).toHaveBeenCalledTimes(2);
 
-    // console.log("🚀 ~ file: Bookmark.test.ts:39 ~ it ~ fetch.mock.calls[1]?.[1]?.body:", fetch.mock.calls[1]?.[1]?.body)
-
-    // expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql
-
     expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
       INSERT DATA {
-        @prefix : <#>.
-        @prefix dct: <http://purl.org/dc/terms/>.
-        @prefix bookm: <http://www.w3.org/2002/01/bookmark#>.
-
-        <#it> a bookm:Bookmark .
-        <#it> dct:title "google";
-        <#it> bookm:recalls <https://google.com>.
+        <#it-metadata> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vocab.noeldemartin.com/crdt/Metadata> .
+        <#it-metadata> <https://vocab.noeldemartin.com/crdt/createdAt> \"2023-11-08T11:19:45.858Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+        <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
+        <#it-metadata> <https://vocab.noeldemartin.com/crdt/updatedAt> \"2023-11-08T11:19:45.858Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+        <#it> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/01/bookmark#Bookmark> .
+        <#it> <http://www.w3.org/2002/01/bookmark#recalls> <https://google.com> .
+        <#it> <http://www.w3.org/2002/01/bookmark#title> \"Tenetur minus porro eaque assumenda.\" .
       }
     `);
   });
