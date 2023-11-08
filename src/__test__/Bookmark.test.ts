@@ -54,33 +54,5 @@ describe("Bookmark CRUD", () => {
         <#it-metadata> <https://vocab.noeldemartin.com/crdt/updatedAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> . 
       }
     `);
-    // expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
-    //   INSERT DATA { <#it> a <http://www.w3.org/2002/01/bookmark#Bookmark> .
-    //     <#it> <http://www.w3.org/2002/01/bookmark#hasTopic> "SearchEngines" .
-    //     <#it> <http://www.w3.org/2002/01/bookmark#recalls> <https://google.com> .
-    //     <#it> <http://www.w3.org/2002/01/bookmark#title> "Google" . 
-    //   }
-    // `);
   });
 });
-
-// async function createStub(title?: string): Promise<Movie> {
-//   const attributes = {
-//     title: title ?? faker.lorem.sentence(),
-//     externalUrls: ["https://example.org/foo", "https://example.org/bar"],
-//     releaseDate: new Date(),
-//   };
-
-//   return tap(new Movie(attributes, true), async (stub) => {
-//     stub.mintUrl();
-//     stub.cleanDirty();
-
-//     const document = await RDFDocument.fromJsonLD(stub.toJsonLD());
-//     const turtle = RDFResourceProperty.toTurtle(
-//       document.properties,
-//       document.url
-//     );
-
-//     StubFetcher.addFetchResponse(turtle);
-//   });
-// }
