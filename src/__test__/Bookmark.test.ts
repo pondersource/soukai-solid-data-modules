@@ -32,26 +32,26 @@ describe("Solid CRUD", () => {
     const bookmark = new Bookmark({ title, link });
 
     const res = await bookmark.save();
-    console.log("🚀 ~ file: Bookmark.test.ts:35 ~ it ~ res:", res)
+    // console.log("🚀 ~ file: Bookmark.test.ts:35 ~ it ~ res:", res)
 
     // Assert
     expect(fetch).toHaveBeenCalledTimes(2);
 
-    console.log("🚀 ~ file: Bookmark.test.ts:39 ~ it ~ fetch.mock.calls[1]?.[1]?.body:", fetch.mock.calls[1]?.[1]?.body)
+    // console.log("🚀 ~ file: Bookmark.test.ts:39 ~ it ~ fetch.mock.calls[1]?.[1]?.body:", fetch.mock.calls[1]?.[1]?.body)
 
-    expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql
+    // expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql
 
-    // expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
-    //   INSERT DATA {
-    //     @prefix : <#>.
-    //     @prefix dct: <http://purl.org/dc/terms/>.
-    //     @prefix bookm: <http://www.w3.org/2002/01/bookmark#>.
+    expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
+      INSERT DATA {
+        @prefix : <#>.
+        @prefix dct: <http://purl.org/dc/terms/>.
+        @prefix bookm: <http://www.w3.org/2002/01/bookmark#>.
 
-    //     <#it> a bookm:Bookmark .
-    //     <#it> dct:title "google";
-    //     <#it> bookm:recalls <https://google.com>.
-    //   }
-    // `);
+        <#it> a bookm:Bookmark .
+        <#it> dct:title "google";
+        <#it> bookm:recalls <https://google.com>.
+      }
+    `);
   });
 });
 
