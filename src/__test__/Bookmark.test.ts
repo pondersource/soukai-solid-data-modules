@@ -44,7 +44,8 @@ describe("Bookmark CRUD", () => {
 
 
     expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
-      INSERT DATA { <#it> a <http://www.w3.org/2002/01/bookmark#Bookmark> .
+      INSERT DATA { 
+        <#it> a <http://www.w3.org/2002/01/bookmark#Bookmark> .
         <#it> <http://www.w3.org/2002/01/bookmark#hasTopic> "SearchEngines" .
         <#it> <http://www.w3.org/2002/01/bookmark#recalls> <https://google.com> .
         <#it> <http://www.w3.org/2002/01/bookmark#title> "Google" .
