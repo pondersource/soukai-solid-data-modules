@@ -33,7 +33,7 @@ describe("Bookmark CRUD", () => {
 
   it("Create", async () => {
     // Arrange
-    const title = "Google";
+    const label = "Google";
     const topic = "Search Engine";
     const link = "https://google.com";
 
@@ -43,7 +43,7 @@ describe("Bookmark CRUD", () => {
     StubFetcher.addFetchResponse();
 
     // Act
-    const bookmark = new Bookmark({ title, topic, link });
+    const bookmark = new Bookmark({ label, topic, link });
 
     bookmark.metadata.createdAt = date;
     bookmark.metadata.updatedAt = date;
@@ -58,7 +58,7 @@ describe("Bookmark CRUD", () => {
         <#it> a <http://www.w3.org/2002/01/bookmark#Bookmark> .
         <#it> <http://www.w3.org/2002/01/bookmark#hasTopic> "Search Engine" .
         <#it> <http://www.w3.org/2002/01/bookmark#recalls> <https://google.com> .
-        <#it> <http://www.w3.org/2002/01/bookmark#title> "Google" .
+        <#it> <http://www.w3.org/2002/01/bookmark#label> "Google" .
         <#it-metadata> a <https://vocab.noeldemartin.com/crdt/Metadata> .
         <#it-metadata> <https://vocab.noeldemartin.com/crdt/createdAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
         <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
@@ -99,7 +99,6 @@ describe("Bookmark CRUD", () => {
     const date = new Date("2023-01-01:00:00Z");
 
     // Arrange
-    // const title = faker.lorem.sentence();
     const stub = await createStub({
       label,
       link,

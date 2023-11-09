@@ -39,8 +39,8 @@ const factory = await BookmarkFactory.getInstance(
 ### use factory instance to CRUD over bookmarks
 ```ts
 const bookmarks = await bookmarkFactory.getAll();
-const bookmark  = await bookmarkFactory.get("149c7283-726f-440f-b13f-4b9d704ac051");
-const bookmark  = await bookmarkFactory.create({ title: "example", link: "https://example.com", hasTopic: "" });
-const bookmark  = await bookmarkFactory.remove("149c7283-726f-440f-b13f-4b9d704ac051");
-const bookmark  = await bookmarkFactory.update("149c7283-726f-440f-b13f-4b9d704ac051", { title: "example", link: "https://example.com" });
+const bookmark  = await bookmarkFactory.get("<pk>");
+const bookmark  = await bookmarkFactory.create({ label: "example", link: "https://example.com", hasTopic: "Topic" });
+const bookmark  = await bookmarkFactory.remove("<pk>");
+const bookmark  = await bookmarkFactory.update("<pk>", { label: "example", link: "https://example.com", hasTopic: "Topic"  });
 ```
