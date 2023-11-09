@@ -52,19 +52,31 @@ describe("Bookmark CRUD", () => {
 
     // Assert
     expect(fetch).toHaveBeenCalledTimes(2);
-
+    
     expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
       INSERT DATA { 
         <#it> a <http://www.w3.org/2002/01/bookmark#Bookmark> .
+        <#it> <http://www.w3.org/2000/01/rdf-schema#label> "Google" .
         <#it> <http://www.w3.org/2002/01/bookmark#hasTopic> "Search Engine" .
         <#it> <http://www.w3.org/2002/01/bookmark#recalls> <https://google.com> .
-        <#it> <http://www.w3.org/2002/01/bookmark#label> "Google" .
         <#it-metadata> a <https://vocab.noeldemartin.com/crdt/Metadata> .
         <#it-metadata> <https://vocab.noeldemartin.com/crdt/createdAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
         <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
         <#it-metadata> <https://vocab.noeldemartin.com/crdt/updatedAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> . 
       }
     `);
+    // expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
+    //   INSERT DATA { 
+    //     <#it> a <http://www.w3.org/2002/01/bookmark#Bookmark> .
+    //     <#it> <http://www.w3.org/2002/01/bookmark#hasTopic> "Search Engine" .
+    //     <#it> <http://www.w3.org/2002/01/bookmark#recalls> <https://google.com> .
+    //     <#it> <http://www.w3.org/2002/01/bookmark#label> "Google" .
+    //     <#it-metadata> a <https://vocab.noeldemartin.com/crdt/Metadata> .
+    //     <#it-metadata> <https://vocab.noeldemartin.com/crdt/createdAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+    //     <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
+    //     <#it-metadata> <https://vocab.noeldemartin.com/crdt/updatedAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> . 
+    //   }
+    // `);
   });
 
   it("Read", async () => {
