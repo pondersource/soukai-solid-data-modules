@@ -121,7 +121,7 @@ export class BookmarkFactory {
           // Create TypeIndex
           const typeIndexUrl = await createTypeIndex(
             args?.webId ?? "",
-            "private",
+            args?.isPrivate ? "private" : "public",
             args?.fetch
           );
           _containerUrls.push(defaultContainerUrl);
