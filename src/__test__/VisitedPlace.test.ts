@@ -28,123 +28,134 @@ describe("VisitedPlace CRUD", () => {
     });
   });
 
-  it("Read Country", async () => {
-    const netherlands = "http://dbpedia.org/resource/Netherlands";
-    const placeType = "Country";
-
-    // Arrange
-    StubFetcher.addFetchResponse(fixture("index.ttl"), {
-      "WAC-Allow": 'public="read"',
-    });
-
-    // Act
-    const visitedPlace = (await VisitedPlace.find(
-      "solid://myvisitedplaces/index#it"
-    )) as VisitedPlace;
-
-    // Assert
-    expect(visitedPlace).toBeInstanceOf(VisitedPlace);
-    expect(visitedPlace.url).toEqual("solid://myvisitedplaces/index#it");
-    expect(visitedPlace.country).toEqual(netherlands);
-    expect(visitedPlace.placeType).toEqual(placeType);
-  });
-
-  //   it("Create", async () => {
-  //     // Arrange
-  //     const label = "Google";
-  //     const topic = "Search Engine";
-  //     const link = "https://google.com";
-
-  //     const date = new Date("2023-01-01:00:00Z");
-
-  //     StubFetcher.addFetchResponse();
-  //     StubFetcher.addFetchResponse();
-
-  //     // Act
-  //     const bookmark = new VisitedPlace({ label, topic, link });
-
-  //     bookmark.metadata.createdAt = date;
-  //     bookmark.metadata.updatedAt = date;
-
-  //     await bookmark.save();
-
-  //     // Assert
-  //     expect(fetch).toHaveBeenCalledTimes(2);
-
-  //     expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
-  //       INSERT DATA {
-  //         <#it> a <http://www.w3.org/2002/01/bookmark#Bookmark> .
-  //         <#it> <http://www.w3.org/2000/01/rdf-schema#label> "Google" .
-  //         <#it> <http://www.w3.org/2002/01/bookmark#recalls> <https://google.com> .
-  //         <#it-metadata> a <https://vocab.noeldemartin.com/crdt/Metadata> .
-  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/createdAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
-  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/updatedAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-  //     }
-  //     `);
-  //   });
-
-  //   it("Update", async () => {
-  //     const label = "Google";
-  //     const topic = "Search Engine";
-  //     const link = "https://google.com";
-
-  //     const date = new Date("2023-01-01:00:00Z");
+  //   it("Read Country", async () => {
+  //     const netherlands = "http://dbpedia.org/resource/Netherlands";
+  //     const placeType = "Country";
 
   //     // Arrange
-  //     const stub = await createStub({
-  //       label,
-  //       link,
-  //       topic,
+  //     StubFetcher.addFetchResponse(fixture("index.ttl"), {
+  //       "WAC-Allow": 'public="read"',
   //     });
 
-  //     const bookmark = new VisitedPlace(stub.getAttributes(), true);
+  //     // Act
+  //     const visitedPlace = (await VisitedPlace.find(
+  //       "solid://myvisitedplaces/index#it"
+  //     )) as VisitedPlace;
 
+  //     // Assert
+  //     expect(visitedPlace).toBeInstanceOf(VisitedPlace);
+  //     expect(visitedPlace.url).toEqual("solid://myvisitedplaces/index#it");
+  //     expect(visitedPlace.country).toEqual(netherlands);
+  //     expect(visitedPlace.placeType).toEqual(placeType);
+  //   });
+
+  //   it("Create Country", async () => {
+  //     // Arrange
+  //     const country = "http://dbpedia.org/resource/Netherlands";
+  //     const placeType = "Country";
+  //     const description = "Nide country to live in";
+  //     const startDate = "2023-11-09";
+
+  //     const date = new Date("2023-01-01:00:00Z");
+
+  //     StubFetcher.addFetchResponse();
   //     StubFetcher.addFetchResponse();
 
   //     // // Act
-  //     bookmark.setAttribute("label", label);
-  //     bookmark.setAttribute("link", link);
-  //     bookmark.setAttribute("topic", topic);
+  //     const visitedPlace = new VisitedPlace({
+  //       country,
+  //       placeType,
+  //       description,
+  //       startDate,
+  //     });
 
-  //     bookmark.metadata.createdAt = date;
-  //     bookmark.metadata.updatedAt = date;
+  //     visitedPlace.metadata.createdAt = date;
+  //     visitedPlace.metadata.updatedAt = date;
 
-  //     await bookmark.save();
+  //     await visitedPlace.save();
 
   //     // // Assert
-  //     expect(bookmark.label).toBe(label);
   //     expect(fetch).toHaveBeenCalledTimes(2);
-
+  //     // console.log("🚀 ~ file: VisitedPlace.test.ts:80 ~ it ~ fetch.mock.calls[1]?.[1]?.body:", fetch.mock.calls[1]?.[1]?.body)
   //     expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
-  //       DELETE DATA {
-  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
-  //       };
-  //       INSERT DATA {
-  //         <#it-metadata> a <https://vocab.noeldemartin.com/crdt/Metadata> .
-  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/createdAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
-  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/updatedAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-  //       }
-  //     `);
+  //         INSERT DATA {
+  //             <#it> a <http://generativeobjects.com/apps#VisitedPlace> .
+  //             <#it> <http://dbpedia.org/class/yago/WikicatMemberStatesOfTheUnitedNations> <http://dbpedia.org/resource/Netherlands> .
+  //             <#it> <http://generativeobjects.com/apps#VisitedPlaceType> "Country" .
+  //             <#it> <https://schema.org/description> "Nide country to live in" .
+  //             <#it> <https://schema.org/startDate> "2023-11-09" .
+  //             <#it-metadata> a <https://vocab.noeldemartin.com/crdt/Metadata> .
+  //             <#it-metadata> <https://vocab.noeldemartin.com/crdt/createdAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  //             <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
+  //             <#it-metadata> <https://vocab.noeldemartin.com/crdt/updatedAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  //         }
+  //       `);
   //   });
+
+  it("Update", async () => {
+    const country = "http://dbpedia.org/resource/Netherlands";
+    const placeType = "Country";
+    const description = "Nide country to live in";
+    const startDate = "2023-11-09";
+
+    const date = new Date("2023-01-01:00:00Z");
+
+    // // Arrange
+    const stub = await createStub({
+      country,
+      placeType,
+      description,
+      startDate,
+    });
+
+    const visitedPlace = new VisitedPlace(stub.getAttributes(), true);
+
+    StubFetcher.addFetchResponse();
+
+    // // // Act
+    visitedPlace.setAttribute("country", country);
+    visitedPlace.setAttribute("description", description);
+
+    visitedPlace.metadata.createdAt = date;
+    visitedPlace.metadata.updatedAt = date;
+
+    const res = await visitedPlace.save();
+
+    // // // Assert
+    expect(visitedPlace.country).toBe(country);
+    expect(fetch).toHaveBeenCalledTimes(2);
+
+    // console.log("🚀 ~ file: VisitedPlace.test.ts:128 ~ it ~ fetch.mock.calls[1]?.[1]?.body:", fetch.mock.calls[1]?.[1]?.body)
+    expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
+        DELETE DATA {
+            <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
+        } ;
+        INSERT DATA {
+            <#it-metadata> a <https://vocab.noeldemartin.com/crdt/Metadata> .
+            <#it-metadata> <https://vocab.noeldemartin.com/crdt/createdAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+            <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
+            <#it-metadata> <https://vocab.noeldemartin.com/crdt/updatedAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+        }
+      `);
+  });
 });
 
-// async function createStub(attributes: {
-//   label: string;
-//   link: string;
-//   topic: string;
-// }): Promise<VisitedPlace> {
-//   return tap(new VisitedPlace(attributes, true), async (stub) => {
-//     stub.mintUrl();
-//     stub.cleanDirty();
+async function createStub(attributes: {
+  country: string;
+  placeType: string;
+  description: string;
+  startDate: string;
+}): Promise<VisitedPlace> {
+  return tap(new VisitedPlace(attributes, true), async (stub) => {
+    stub.mintUrl();
+    stub.cleanDirty();
 
-//     const document = await RDFDocument.fromJsonLD(stub.toJsonLD());
-//     const turtle = RDFResourceProperty.toTurtle(
-//       document.properties,
-//       document.url
-//     );
+    const document = await RDFDocument.fromJsonLD(stub.toJsonLD());
+    const turtle = RDFResourceProperty.toTurtle(
+      document.properties,
+      document.url
+    );
 
-//     StubFetcher.addFetchResponse(turtle);
-//   });
-// }
+    StubFetcher.addFetchResponse(turtle);
+  });
+}
