@@ -5,15 +5,9 @@
 @prefix res: <http://dbpedia.org/resource/>.
 @prefix ont: <http://dbpedia.org/ontology/>.
 
-:a0075194-ba06-4682-b899-30cc8d229e20
+:it
     a n0:VisitedPlace;
     y:WikicatMemberStatesOfTheUnitedNations res:Netherlands;
     n0:VisitedPlaceType "Country";
     schema:description "Nide country to live in";
-    schema:startDate "2023-11-09".
-:a27db5fa-f3b7-48ae-b26d-221aef2d6b3c
-    a n0:VisitedPlace;
-    ont:Place res:Cabin_Ben;
-    n0:VisitedPlaceType "Place";
-    schema:description "nice place";
     schema:startDate "2023-11-09".

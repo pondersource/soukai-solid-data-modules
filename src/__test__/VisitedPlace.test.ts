@@ -1,158 +1,150 @@
-// import { loadFixture } from "@/testing/utils";
-// import RDFDocument from "@/utils/solid/RDFDocument";
-// import RDFResourceProperty from "@/utils/solid/RDFResourceProperty";
-// import { tap } from "@noeldemartin/utils";
-// import { readFileSync } from "fs";
-// import { bootModels, setEngine } from "soukai";
-// import { SolidEngine } from "soukai-solid";
-// import { VisitedPlace } from "../modules/VisitedPlace";
-// import StubFetcher from "../utils/StubFetcher";
+import RDFDocument from "@/utils/solid/RDFDocument";
+import RDFResourceProperty from "@/utils/solid/RDFResourceProperty";
+import { tap } from "@noeldemartin/utils";
+import { readFileSync } from "fs";
+import { bootModels, setEngine } from "soukai";
+import { SolidEngine } from "soukai-solid";
+import { VisitedPlace } from "../modules/VisitedPlace";
+import StubFetcher from "../utils/StubFetcher";
 
-// export function loadFixture<T = string>(name: string): T {
-//   const raw = readFileSync(`${__dirname}/fixtures/${name}`).toString();
+export function loadFixture<T = string>(name: string): T {
+  const raw = readFileSync(`${__dirname}/fixtures/${name}`).toString();
 
-//   return /\.json(ld)$/.test(name) ? JSON.parse(raw) : raw;
-// }
+  return /\.json(ld)$/.test(name) ? JSON.parse(raw) : raw;
+}
 
-// const fixture = (name: string) => loadFixture(`myvisitedplaces/${name}`);
+const fixture = (name: string) => loadFixture(`myvisitedplaces/${name}`);
 
-// describe("VisitedPlace CRUD", () => {
-//   let fetch: jest.Mock<Promise<Response>, [RequestInfo, RequestInit?]>;
+describe("VisitedPlace CRUD", () => {
+  let fetch: jest.Mock<Promise<Response>, [RequestInfo, RequestInit?]>;
 
-//   beforeEach(() => {
-//     fetch = jest.fn((...args) => StubFetcher.fetch(...args));
-//     VisitedPlace.collection = "https://fake-pod.com/myvisitedplaces/";
+  beforeEach(() => {
+    fetch = jest.fn((...args) => StubFetcher.fetch(...args));
+    VisitedPlace.collection = "https://fake-pod.com/myvisitedplaces/";
 
-//     setEngine(new SolidEngine(fetch));
-//     bootModels({
-//       VisitedPlace: VisitedPlace,
-//     });
-//   });
+    setEngine(new SolidEngine(fetch));
+    bootModels({
+      VisitedPlace: VisitedPlace,
+    });
+  });
 
-//   it("Read", async () => {
-//     const label = "Google";
-//     const topic = "Search Engine";
-//     const link = "https://google.com";
+  it("Read Country", async () => {
+    const netherlands = "http://dbpedia.org/resource/Netherlands";
+    const placeType = "Country";
 
-//     // Arrange
-//     StubFetcher.addFetchResponse(fixture("index.ttl"), {
-//       "WAC-Allow": 'public="read"',
-//     });
+    // Arrange
+    StubFetcher.addFetchResponse(fixture("index.ttl"), {
+      "WAC-Allow": 'public="read"',
+    });
 
-//     // "https://fake-pod.com/myvisitedplaces/
-//     // Act
-//     const visitedPlace = (await VisitedPlace.find(
-//       "solid://myvisitedplaces/index#it"
-//     )) as VisitedPlace;
+    // Act
+    const visitedPlace = (await VisitedPlace.find(
+      "solid://myvisitedplaces/index#it"
+    )) as VisitedPlace;
 
-//     console.log(
-//       "🚀 ~ file: VisitedPlace.test.ts:81 ~ it ~ visitedPlace.url:",
-//       visitedPlace.url
+    // Assert
+    expect(visitedPlace).toBeInstanceOf(VisitedPlace);
+    expect(visitedPlace.url).toEqual("solid://myvisitedplaces/index#it");
+    expect(visitedPlace.country).toEqual(netherlands);
+    expect(visitedPlace.placeType).toEqual(placeType);
+  });
+
+  //   it("Create", async () => {
+  //     // Arrange
+  //     const label = "Google";
+  //     const topic = "Search Engine";
+  //     const link = "https://google.com";
+
+  //     const date = new Date("2023-01-01:00:00Z");
+
+  //     StubFetcher.addFetchResponse();
+  //     StubFetcher.addFetchResponse();
+
+  //     // Act
+  //     const bookmark = new VisitedPlace({ label, topic, link });
+
+  //     bookmark.metadata.createdAt = date;
+  //     bookmark.metadata.updatedAt = date;
+
+  //     await bookmark.save();
+
+  //     // Assert
+  //     expect(fetch).toHaveBeenCalledTimes(2);
+
+  //     expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
+  //       INSERT DATA {
+  //         <#it> a <http://www.w3.org/2002/01/bookmark#Bookmark> .
+  //         <#it> <http://www.w3.org/2000/01/rdf-schema#label> "Google" .
+  //         <#it> <http://www.w3.org/2002/01/bookmark#recalls> <https://google.com> .
+  //         <#it-metadata> a <https://vocab.noeldemartin.com/crdt/Metadata> .
+  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/createdAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
+  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/updatedAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  //     }
+  //     `);
+  //   });
+
+  //   it("Update", async () => {
+  //     const label = "Google";
+  //     const topic = "Search Engine";
+  //     const link = "https://google.com";
+
+  //     const date = new Date("2023-01-01:00:00Z");
+
+  //     // Arrange
+  //     const stub = await createStub({
+  //       label,
+  //       link,
+  //       topic,
+  //     });
+
+  //     const bookmark = new VisitedPlace(stub.getAttributes(), true);
+
+  //     StubFetcher.addFetchResponse();
+
+  //     // // Act
+  //     bookmark.setAttribute("label", label);
+  //     bookmark.setAttribute("link", link);
+  //     bookmark.setAttribute("topic", topic);
+
+  //     bookmark.metadata.createdAt = date;
+  //     bookmark.metadata.updatedAt = date;
+
+  //     await bookmark.save();
+
+  //     // // Assert
+  //     expect(bookmark.label).toBe(label);
+  //     expect(fetch).toHaveBeenCalledTimes(2);
+
+  //     expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
+  //       DELETE DATA {
+  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
+  //       };
+  //       INSERT DATA {
+  //         <#it-metadata> a <https://vocab.noeldemartin.com/crdt/Metadata> .
+  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/createdAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
+  //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/updatedAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  //       }
+  //     `);
+  //   });
+});
+
+// async function createStub(attributes: {
+//   label: string;
+//   link: string;
+//   topic: string;
+// }): Promise<VisitedPlace> {
+//   return tap(new VisitedPlace(attributes, true), async (stub) => {
+//     stub.mintUrl();
+//     stub.cleanDirty();
+
+//     const document = await RDFDocument.fromJsonLD(stub.toJsonLD());
+//     const turtle = RDFResourceProperty.toTurtle(
+//       document.properties,
+//       document.url
 //     );
 
-//     // Assert
-//     // expect(visitedPlace).toBeInstanceOf(VisitedPlace);
-//     // expect(bookmark.url).toEqual("solid://bookmarks/google#it");
-//     // expect(bookmark.label).toEqual(label);
-//     // expect(bookmark.topic).toEqual(topic);
-//     // expect(bookmark.link).toEqual(link);
+//     StubFetcher.addFetchResponse(turtle);
 //   });
-//   //   it("Create", async () => {
-//   //     // Arrange
-//   //     const label = "Google";
-//   //     const topic = "Search Engine";
-//   //     const link = "https://google.com";
-
-//   //     const date = new Date("2023-01-01:00:00Z");
-
-//   //     StubFetcher.addFetchResponse();
-//   //     StubFetcher.addFetchResponse();
-
-//   //     // Act
-//   //     const bookmark = new VisitedPlace({ label, topic, link });
-
-//   //     bookmark.metadata.createdAt = date;
-//   //     bookmark.metadata.updatedAt = date;
-
-//   //     await bookmark.save();
-
-//   //     // Assert
-//   //     expect(fetch).toHaveBeenCalledTimes(2);
-
-//   //     expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
-//   //       INSERT DATA {
-//   //         <#it> a <http://www.w3.org/2002/01/bookmark#Bookmark> .
-//   //         <#it> <http://www.w3.org/2000/01/rdf-schema#label> "Google" .
-//   //         <#it> <http://www.w3.org/2002/01/bookmark#recalls> <https://google.com> .
-//   //         <#it-metadata> a <https://vocab.noeldemartin.com/crdt/Metadata> .
-//   //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/createdAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-//   //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
-//   //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/updatedAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-//   //     }
-//   //     `);
-//   //   });
-
-//   //   it("Update", async () => {
-//   //     const label = "Google";
-//   //     const topic = "Search Engine";
-//   //     const link = "https://google.com";
-
-//   //     const date = new Date("2023-01-01:00:00Z");
-
-//   //     // Arrange
-//   //     const stub = await createStub({
-//   //       label,
-//   //       link,
-//   //       topic,
-//   //     });
-
-//   //     const bookmark = new VisitedPlace(stub.getAttributes(), true);
-
-//   //     StubFetcher.addFetchResponse();
-
-//   //     // // Act
-//   //     bookmark.setAttribute("label", label);
-//   //     bookmark.setAttribute("link", link);
-//   //     bookmark.setAttribute("topic", topic);
-
-//   //     bookmark.metadata.createdAt = date;
-//   //     bookmark.metadata.updatedAt = date;
-
-//   //     await bookmark.save();
-
-//   //     // // Assert
-//   //     expect(bookmark.label).toBe(label);
-//   //     expect(fetch).toHaveBeenCalledTimes(2);
-
-//   //     expect(fetch.mock.calls[1]?.[1]?.body).toEqualSparql(`
-//   //       DELETE DATA {
-//   //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
-//   //       };
-//   //       INSERT DATA {
-//   //         <#it-metadata> a <https://vocab.noeldemartin.com/crdt/Metadata> .
-//   //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/createdAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-//   //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/resource> <#it> .
-//   //         <#it-metadata> <https://vocab.noeldemartin.com/crdt/updatedAt> "2023-01-01T00:00:00.000Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-//   //       }
-//   //     `);
-//   //   });
-// });
-
-// // async function createStub(attributes: {
-// //   label: string;
-// //   link: string;
-// //   topic: string;
-// // }): Promise<VisitedPlace> {
-// //   return tap(new VisitedPlace(attributes, true), async (stub) => {
-// //     stub.mintUrl();
-// //     stub.cleanDirty();
-
-// //     const document = await RDFDocument.fromJsonLD(stub.toJsonLD());
-// //     const turtle = RDFResourceProperty.toTurtle(
-// //       document.properties,
-// //       document.url
-// //     );
-
-// //     StubFetcher.addFetchResponse(turtle);
-// //   });
-// // }
+// }
