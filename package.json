@@ -65,10 +65,10 @@
     "@types/rdf-js": "^3.0.0",
     "cross-env": "^5.2.0",
     "dayjs": "^1.10.5",
-    "jest-summary-reporter": "0.0.2",
-    "soukai": "~0.5.1"
+    "jest-summary-reporter": "0.0.2"
   },
   "dependencies": {
+    "soukai": "~0.5.1",
     "uuid": "^9.0.1",
     "soukai-solid": "^0.5.2"
   }
