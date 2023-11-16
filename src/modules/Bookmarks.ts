@@ -1,15 +1,16 @@
 import { FieldType, TimestampField } from "soukai";
 import {
-  defineSolidModelSchema, SolidContainer,
+  defineSolidModelSchema,
+  SolidContainer,
   SolidDocument,
-  SolidModel
+  SolidModel,
 } from "soukai-solid";
 import { v4 } from "uuid";
 import { GetInstanceArgs, ISoukaiDocumentBase } from "../types";
 import {
   createTypeIndex,
   getTypeIndexFromPofile,
-  registerInTypeIndex
+  registerInTypeIndex,
 } from "../utils/typeIndexHelpers";
 
 export type ICreateBookmark = {
@@ -20,9 +21,9 @@ export type ICreateBookmark = {
 
 export type IBookmark = ISoukaiDocumentBase & ICreateBookmark;
 
-export const BookmarkSchema = defineSolidModelSchema({
+export const TopicSchema = defineSolidModelSchema({
   rdfContexts: {
-    bk: "http://www.w3.org/2002/01/bookmark#",
+    // bk: "http://www.w3.org/2002/01/bookmark#",
   },
 
   rdfsClasses: ["bk:Bookmark"],
@@ -31,7 +32,7 @@ export const BookmarkSchema = defineSolidModelSchema({
 
   fields: {
     topic: {
-      type: FieldType.String,
+      type: FieldType.Key,
       rdfProperty: "bk:hasTopic",
     },
     label: {
@@ -43,16 +44,33 @@ export const BookmarkSchema = defineSolidModelSchema({
       rdfProperty: "bk:recalls",
     },
   },
+});
+export const BookmarkSchema = defineSolidModelSchema({
+  rdfContexts: {
+    bk: "http://www.w3.org/2002/01/bookmark#",
+  },
 
+  rdfsClasses: ["bk:Bookmark"],
+
+  timestamps: [TimestampField.CreatedAt, TimestampField.UpdatedAt],
+
+  fields: {
+    topic: {
+      type: FieldType.Key,
+      rdfProperty: "bk:hasTopic",
+    },
+    label: {
+      type: FieldType.String,
+      rdfProperty: "rdfs:label",
+    },
+    link: {
+      type: FieldType.Key,
+      rdfProperty: "bk:recalls",
+    },
+  },
 });
 
-export class Bookmark extends BookmarkSchema {
-  // protected initialize(attributes: Attributes, exists: boolean): void {
-  // }
-  // newInstance({ url: "url" }, true)
-  // newInstance<T extends Model>(this: T, attributes?: Attributes | undefined, exists?: boolean | undefined): T {
-  // }
-}
+export class Bookmark extends BookmarkSchema {}
 
 export class BookmarkFactory {
   private static instance: BookmarkFactory;
@@ -60,7 +78,7 @@ export class BookmarkFactory {
   private constructor(
     private containerUrls: string[] = [],
     private instancesUrls: string[] = []
-  ) { }
+  ) {}
 
   public static async getInstance(
     args?: GetInstanceArgs,
@@ -70,7 +88,9 @@ export class BookmarkFactory {
       try {
         const baseURL = args?.webId.split("profile")[0]; // https://example.solidcommunity.net/
 
-        defaultContainerUrl = `${baseURL}${defaultContainerUrl ?? "bookmarks/"}`;
+        defaultContainerUrl = `${baseURL}${
+          defaultContainerUrl ?? "bookmarks/"
+        }`;
 
         let _containerUrls: string[] = [];
         let _instancesUrls: string[] = [];
@@ -121,7 +141,7 @@ export class BookmarkFactory {
           // Create TypeIndex
           const typeIndexUrl = await createTypeIndex(
             args?.webId ?? "",
-            args?.isPrivate ? "private" : "public",
+            "private",
             args?.fetch
           );
           _containerUrls.push(defaultContainerUrl);
