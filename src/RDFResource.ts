@@ -1,6 +1,6 @@
 import type { Quad } from 'rdf-js';
 import RDFResourceProperty, { LiteralValue, RDFResourcePropertyType } from './RDFResourceProperty';
-import IRI from '../IRI';
+import IRI from './IRI';
 
 // import IRI from '@/solid/utils/IRI';
 // import RDFResourceProperty, { RDFResourcePropertyType } from '@/solid/RDFResourceProperty';

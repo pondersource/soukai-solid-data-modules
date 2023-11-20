@@ -6,8 +6,6 @@ import type { Quad } from 'rdf-js';
 import RDFResource from './RDFResource';
 import RDFResourceProperty from './RDFResourceProperty';
 
-// import RDFResource from '@/solid/RDFResource';
-// import type RDFResourceProperty from '@/solid/RDFResourceProperty';
 
 export interface TurtleParsingOptions {
     baseIRI: string;
@@ -34,7 +32,7 @@ export default class RDFDocument {
             baseIRI: options.baseIRI,
         });
 
-        return new RDFDocument(options.baseIRI || '', data.quads, {
+        return new RDFDocument(options.baseIRI || '', data.quads as Quad[], {
             containsRelativeIRIs: data.containsRelativeIRIs,
             describedBy: getDescribedBy(options),
             headers: options.headers,
@@ -81,7 +79,7 @@ export default class RDFDocument {
     private static async getFromJsonLD(json: JsonLD, baseUrl?: string): Promise<RDFDocument> {
         const quads = await jsonldToQuads(json, baseUrl);
 
-        return tap(new RDFDocument(json['@id'] ? urlRoute(json['@id']) : null, quads), document => {
+        return tap(new RDFDocument(json['@id'] ? urlRoute(json['@id']) : null, quads as Quad[]), document => {
             this.documentsCache.set(json, document);
         });
     }
@@ -126,7 +124,7 @@ export default class RDFDocument {
     }
 
     public async toJsonLD(): Promise<JsonLDGraph> {
-        return quadsToJsonLD(this.statements);
+        return quadsToJsonLD(this.statements as any);
     }
 
     public resource(url: string): RDFResource | null {

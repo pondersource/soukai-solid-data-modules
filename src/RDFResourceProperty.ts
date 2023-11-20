@@ -1,5 +1,5 @@
 import type { Literal, Quad } from 'rdf-js';
-import IRI from '../IRI';
+import IRI from './IRI';
 
 // import IRI from '@/solid/utils/IRI';
 
