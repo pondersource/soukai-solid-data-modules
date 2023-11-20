@@ -36,18 +36,18 @@
     "url": "https://github.com/pondersource/soukai-solid-utils/issues"
   },
   "homepage": "https://github.com/pondersource/soukai-solid-utils#readme",
-  "dependencies": {
-    "@noeldemartin/solid-utils": "^0.3.0",
-    "@noeldemartin/utils": "^0.4.0",
+  "devDependencies": {
     "@types/jest": "^29.5.8",
     "@types/node": "^20.9.2",
-    "rdf-js": "^4.0.2",
+    "@types/uuid": "^9.0.7",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
     "soukai": "~0.5.1",
     "soukai-solid": "^0.5.2",
-    "typescript": "^5.2.2",
-    "uuid": "^9.0.1"
-  },
-  "devDependencies": {
-    "@types/uuid": "^9.0.7"
+    "@noeldemartin/solid-utils": "^0.3.0",
+    "@noeldemartin/utils": "^0.4.0",
+    "uuid": "^9.0.1",
+    "rdf-js": "^4.0.2"
   }
 }
