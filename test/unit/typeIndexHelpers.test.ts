@@ -35,7 +35,6 @@ describe("getTypeIndexFromProfile", () => {
         const args = {
             webId: "https://fake-pod.com/profile/card#me",
             fetch,
-            // fetch: {}, FIXME: https://github.com/pondersource/soukai-solid-utils/issues/17
             typePredicate: "solid:publicTypeIndex",
         };
 
@@ -50,7 +49,6 @@ describe("getTypeIndexFromProfile", () => {
         const args = {
             webId: "https://fake-pod.com/profile/card#me",
             fetch,
-            // fetch: {}, FIXME: https://github.com/pondersource/soukai-solid-utils/issues/17
             typePredicate: "solid:privateTypeIndex",
         };
         const result = await getTypeIndexFromProfile(args as any);
