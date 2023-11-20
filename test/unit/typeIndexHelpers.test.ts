@@ -8,8 +8,7 @@ describe("getTypeIndexFromProfile", () => {
             // fetch: {}, FIXME: https://github.com/pondersource/soukai-solid-utils/issues/17
             typePredicate: "solid:publicTypeIndex",
         };
-        const result = await 
-        getTypeIndexFromProfile(args as any);
+        const result = await getTypeIndexFromProfile(args as any);
         expect(result).toBe("https://michielbdejong.solidcommunity.net/settings/publicTypeIndex.ttl");
     });
 });
