@@ -1,13 +1,17 @@
 {
   "name": "soukai-solid-utils",
-  "version": "0.0.3",
-  "description": "Data Modules for Soukai Solid ODM",
+  "version": "0.0.1",
+  "description": "Some utils for use in combination with Soukai Solid",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "tsc -w",
     "clean": "rm -rf dist/",
     "build": "npm run clean && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pondersource/soukai-solid-utils.git"
   },
   "files": [
     "dist/**/*"
@@ -26,6 +30,12 @@
     "template",
     "ts"
   ],
+  "author": "Reza Soltani",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pondersource/soukai-solid-utils/issues"
+  },
+  "homepage": "https://github.com/pondersource/soukai-solid-utils#readme",
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/plugin-transform-runtime": "^7.13.8",
