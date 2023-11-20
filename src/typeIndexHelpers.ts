@@ -43,7 +43,7 @@ export const registerInTypeIndex = async (args: {
 
   typeRegistration.mintUrl(args.typeIndexUrl, true, v4());
 
-  await typeRegistration.withEngine(getEngine()!, () =>
+  return await typeRegistration.withEngine(getEngine()!, () =>
     typeRegistration.save(urlParentDirectory(args.typeIndexUrl) ?? "")
   );
 };
@@ -74,16 +74,19 @@ export async function createTypeIndex(
         }
     `;
 
-  await Promise.all([
-    createSolidDocument(typeIndexUrl, typeIndexBody, fetch),
-    updateSolidDocument(webId, profileUpdateBody, fetch), // https://reza-soltani.solidcommunity.net/profile/card
-  ]);
+  try {
+    const res = await Promise.all([
+      createSolidDocument(typeIndexUrl, typeIndexBody, fetch),
+      updateSolidDocument(webId, profileUpdateBody, fetch), // https://reza-soltani.solidcommunity.net/profile/card
+    ]);
+    if (type === "public") {
+      // TODO Implement updating ACLs for the listing itself to public
+    }
 
-  if (type === "public") {
-    // TODO Implement updating ACLs for the listing itself to public
+    return res[0]
+  } catch (error) {
+    console.log("🚀 ~ file: typeIndexHelpers.ts:89 ~ error:", error)
   }
-
-  return typeIndexUrl;
 }
 
 async function findRegistrations(
