@@ -26,7 +26,7 @@ describe("getTypeIndexFromProfile", () => {
         setEngine(new SolidEngine(fetch));
     });
 
-    it("fetches the public type index", async () => {
+    it("fetches the public type index URL", async () => {
         // Arrange
         stubFetcher.addFetchResponse(loadFixture("card.ttl"), {
             "WAC-Allow": 'public="read"',
@@ -42,7 +42,7 @@ describe("getTypeIndexFromProfile", () => {
         expect(result).toBe("https://fake-pod.com/settings/publicTypeIndex.ttl");
     });
 
-    it("fetches the private type index", async () => {
+    it("fetches the private type index URL", async () => {
         stubFetcher.addFetchResponse(loadFixture("card.ttl"), {
             "WAC-Allow": 'public="read"',
         });
@@ -52,11 +52,10 @@ describe("getTypeIndexFromProfile", () => {
             typePredicate: "solid:privateTypeIndex",
         };
         const result = await getTypeIndexFromProfile(args as any);
-        // console.log("🚀 ~ file: typeIndexHelpers.test.ts:22 ~ it ~ result:", result)
         expect(result).toBe("https://fake-pod.com/settings/privateTypeIndex.ttl");
     });
 
-    it("registers instance In TypeIndex", async () => {
+    it("registers instanceContainer In TypeIndex", async () => {
 
         // Arrange
         SolidTypeRegistration.collection = "https://fake-pod.com/settings/";
@@ -76,8 +75,11 @@ describe("getTypeIndexFromProfile", () => {
 
 
         // Assert
-        expect(fetch).toHaveBeenCalledTimes(2);
-
+        // expect(fetch).toHaveBeenCalledTimes(2);
+        expect(fetch).toHaveBeenCalledWith(typeIndexUrl, expect.objectContaining({ method: 'PATCH', body: expect.stringContaining('INSERT DATA { <'), headers: expect.objectContaining({ 'Content-Type': 'application/sparql-update' }) }));
+        expect(fetch).toHaveBeenCalledWith(typeIndexUrl, expect.objectContaining({ method: 'PATCH', body: expect.stringContaining('> a <http://www.w3.org/ns/solid/terms#TypeRegistration> .') }));
+        expect(fetch).toHaveBeenCalledWith(typeIndexUrl, expect.objectContaining({ method: 'PATCH', body: expect.stringContaining('> <http://www.w3.org/ns/solid/terms#forClass> <http://www.w3.org/2002/01/bookmark#Bookmark> .') }));
+        expect(fetch).toHaveBeenCalledWith(typeIndexUrl, expect.objectContaining({ method: 'PATCH', body: expect.stringContaining('> <http://www.w3.org/ns/solid/terms#instanceContainer> <https://solid-dm.solidcommunity.net/bookmarks/> . }') }));
         expect(result.forClass).toEqual(forClass);
         expect(result.instanceContainer).toEqual(instanceContainer);
     })
@@ -85,6 +87,7 @@ describe("getTypeIndexFromProfile", () => {
 
         // Arrange
         const webId = "https://fake-pod.com/profile/card#me"
+        const expectedTypeIndexUrl = "https://fake-pod.com/settings/publicTypeIndex.ttl"
 
         stubFetcher.addFetchResponse();
         stubFetcher.addFetchResponse();
@@ -93,14 +96,23 @@ describe("getTypeIndexFromProfile", () => {
         const result = await createTypeIndex(webId, "public", fetch)
 
         // Assert
-        expect(result?.url).toEqual("https://fake-pod.com/settings/publicTypeIndex.ttl");
+        expect(result?.url).toEqual(expectedTypeIndexUrl);
 
-        expect(fetch).toHaveBeenCalledTimes(2);
+        // expect(fetch).toHaveBeenCalledTimes(2);
+        // adding the link into the profile
+        expect(fetch).toHaveBeenCalledWith(webId, expect.objectContaining({ method: 'PATCH', body: expect.stringContaining('INSERT DATA {'), headers: expect.objectContaining({ 'Content-Type': 'application/sparql-update' }) }));
+        expect(fetch).toHaveBeenCalledWith(webId, expect.objectContaining({ method: 'PATCH', body: expect.stringContaining('<https://fake-pod.com/profile/card#me> <http://www.w3.org/ns/solid/terms#publicTypeIndex> <https://fake-pod.com/settings/publicTypeIndex.ttl> .') }));
+
+        // create the typeIndex document
+        expect(fetch).toHaveBeenCalledWith(expectedTypeIndexUrl, expect.objectContaining({ method: 'PUT', body: '<> a <http://www.w3.org/ns/solid/terms#TypeIndex> .', headers: expect.objectContaining({ 'Content-Type': 'text/turtle' }) }));
+
     })
     it("Creates private typeIndex document", async () => {
 
         // Arrange
         const webId = "https://fake-pod.com/profile/card#me"
+        const expectedTypeIndexUrl = "https://fake-pod.com/settings/privateTypeIndex.ttl"
+
 
         stubFetcher.addFetchResponse();
         stubFetcher.addFetchResponse();
@@ -109,8 +121,17 @@ describe("getTypeIndexFromProfile", () => {
         const result = await createTypeIndex(webId, "private", fetch)
 
         // Assert
-        expect(result?.url).toEqual("https://fake-pod.com/settings/privateTypeIndex.ttl");
+        expect(result?.url).toEqual(expectedTypeIndexUrl);
 
-        expect(fetch).toHaveBeenCalledTimes(2);
+        // expect(fetch).toHaveBeenCalledTimes(2);
+        // adding the link into the profile
+        expect(fetch).toHaveBeenCalledWith(webId, expect.objectContaining({ method: 'PATCH', body: expect.stringContaining('INSERT DATA {'), headers: expect.objectContaining({ 'Content-Type': 'application/sparql-update' }) }));
+        expect(fetch).toHaveBeenCalledWith(webId, expect.objectContaining({ method: 'PATCH', body: expect.stringContaining('<https://fake-pod.com/profile/card#me> <http://www.w3.org/ns/solid/terms#privateTypeIndex> <https://fake-pod.com/settings/privateTypeIndex.ttl> .') }));
+
+        // create the typeIndex document
+        expect(fetch).toHaveBeenCalledWith(expectedTypeIndexUrl, expect.objectContaining({ method: 'PUT', body: expect.stringContaining('<> a'), headers: expect.objectContaining({ 'Content-Type': 'text/turtle' }) }));
+        expect(fetch).toHaveBeenCalledWith(expectedTypeIndexUrl, expect.objectContaining({ method: 'PUT', body: expect.stringContaining('<http://www.w3.org/ns/solid/terms#TypeIndex>,') }));
+        expect(fetch).toHaveBeenCalledWith(expectedTypeIndexUrl, expect.objectContaining({ method: 'PUT', body: expect.stringContaining('<http://www.w3.org/ns/solid/terms#UnlistedDocument> .') }));
+
     })
 });
