@@ -1,6 +1,6 @@
 {
   "name": "soukai-solid-utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Some utils for use in combination with Soukai Solid",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
